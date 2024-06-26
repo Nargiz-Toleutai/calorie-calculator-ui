@@ -39,11 +39,9 @@ const Register = () => {
       });
 
       const responseData = await response.json();
-      console.log(responseData);
 
       if (response.status === 201) {
-        localStorage.setItem("token", responseData.token);
-        router.push("/");
+        router.push("/login");
       } else if (response.status === 409) {
         setError("User already exists. Redirecting to login page...");
         setTimeout(() => {

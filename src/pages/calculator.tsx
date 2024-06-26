@@ -10,35 +10,29 @@ const AdditionalUserDataValidator = z
   .object({
     weight: z.preprocess(
       (val) => Number(val),
-      z.number().min(40, {
-        message: "Weight should be a minimum of 40kg",
-      })
+      z.number().min(40, { message: "Weight should be a minimum of 40kg" })
     ),
-
     height: z.preprocess(
       (val) => Number(val),
-      z.number().min(30, {
-        message: "Height should be a minimum of 30cm",
-      })
+      z.number().min(30, { message: "Height should be a minimum of 30cm" })
     ),
     age: z.preprocess(
       (val) => Number(val),
-      z.number().min(18, {
-        message: "Age should be a minimum of 18",
-      })
+      z.number().min(18, { message: "Age should be a minimum of 18" })
     ),
-    gender: z.preprocess((val) => val === "true", z.boolean()),
+    gender: z.preprocess(
+      (val) => (val === "true" ? true : val === "false" ? false : val),
+      z.boolean({ message: "Gender is required" })
+    ),
     activityLevel: z.preprocess(
       (val) => Number(val),
-      z.number().min(1, {
-        message: "Activity level should be a minimum of 1",
-      })
+      z.number().min(1, { message: "Activity level should be a minimum of 1" })
     ),
     targetDeficitPercent: z.preprocess(
       (val) => Number(val),
-      z.number().min(0, {
-        message: "Deficit percentage should be a minimum of 0",
-      })
+      z
+        .number()
+        .min(0, { message: "Deficit percentage should be a minimum of 0" })
     ),
   })
   .strict();
@@ -175,7 +169,7 @@ const Calculator = () => {
             id={"height"}
             className={`${errors.height ? "error-input" : ""}`}
             defaultValue={data.height}
-            {...register("height", { valueAsNumber: true })}
+            {...register("height")}
             min={30}
           />
           {errors.height && (
@@ -188,7 +182,7 @@ const Calculator = () => {
             id={"age"}
             className={`${errors.age ? "error-input" : ""}`}
             defaultValue={data.age}
-            {...register("age", { valueAsNumber: true })}
+            {...register("age")}
             min={18}
           />
           {errors.age && <p className="error-message">{errors.age.message}</p>}
@@ -200,7 +194,7 @@ const Calculator = () => {
               id={"gender"}
               className={`${errors.gender ? "error-input" : ""}`}
               value="true"
-              {...register("gender", { valueAsNumber: true })}
+              {...register("gender")}
             />
             <label htmlFor={"gender-female"}>Female</label>
             <input
@@ -208,9 +202,11 @@ const Calculator = () => {
               id={"gender-female"}
               className={`${errors.gender ? "error-input" : ""}`}
               value="false"
-              {...register("gender", { valueAsNumber: true })}
-              checked
+              {...register("gender")}
             />
+            {errors.gender && (
+              <p className="error-message">{errors.gender.message}</p>
+            )}
           </div>
 
           <label htmlFor={"activityLevel"}>Activity Level</label>
@@ -219,7 +215,7 @@ const Calculator = () => {
             id={"activityLevel"}
             className={`${errors.activityLevel ? "error-input" : ""}`}
             defaultValue={data.activityLevel}
-            {...register("activityLevel", { valueAsNumber: true })}
+            {...register("activityLevel")}
             min={1}
           />
           {errors.activityLevel && (
@@ -232,7 +228,7 @@ const Calculator = () => {
             id={"targetDeficitPercent"}
             className={`${errors.targetDeficitPercent ? "error-input" : ""}`}
             defaultValue={data.targetDeficitPercent}
-            {...register("targetDeficitPercent", { valueAsNumber: true })}
+            {...register("targetDeficitPercent")}
             min={0}
           />
           {errors.targetDeficitPercent && (
