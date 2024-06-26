@@ -42,7 +42,7 @@ const HomePageInfoPanel = () => {
       </div>
       <div className="footer">
         <button>
-          <Link href="/register">Get started now</Link>
+          <Link href={`/calculator`}>Get started now</Link>
         </button>
       </div>
     </div>
