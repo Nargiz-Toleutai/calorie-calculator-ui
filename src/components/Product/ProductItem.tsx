@@ -1,25 +1,11 @@
 import Link from "next/link";
-import ProductButton from "../buttons/ProductButton";
 import { useRouter } from "next/router";
-
-// interface RecipeComment {
-//   rating: number;
-// }
-
-// const calculateAverageRating = (comments: RecipeComment[]): number => {
-//   if (comments.length === 0) return 0;
-//   const totalRating = comments.reduce(
-//     (acc, comment) => acc + comment.rating,
-//     0
-//   );
-//   return totalRating / comments.length;
-// };
 
 export interface Product {
   id: number;
   name: string;
   unit: number;
-  quantity: number;
+  quantity?: number;
   protein: number;
   carbs: number;
   fat: number;
@@ -31,7 +17,6 @@ export interface Product {
 const ProductItem = ({
   name,
   unit,
-  quantity,
   protein,
   carbs,
   fat,
@@ -47,16 +32,17 @@ const ProductItem = ({
 
   return (
     <li>
-      {/* <ProductCard
-        name: {name};
-        unit: {unit};
-        calories: {calories};
-        image: {image};
-      /> */}
-
+      <div>
+        <p>name: {name}</p>
+        <p>unit: {unit}</p>
+        <p>protein: {protein}</p>
+        <p>carbs: {carbs}</p>
+        <p>fat: {fat}</p>
+        <p>calories: {calories}</p>
+        <p>image: {image}</p>
+      </div>
       <div>
         <button onClick={handleEditButton}>Edit</button>
-        <button onClick={handleEditButton}>Add to meal</button>
         <button>Delete</button>
       </div>
     </li>

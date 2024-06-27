@@ -1,11 +1,13 @@
 import React from "react";
-import { Layout } from "lucide-react";
 import RecipeList from "@/components/Recipe/RecipeList";
+import ProductList from "@/components/Product/ProductList";
+import Layout from "@/components/Layout";
+import AddNewRecipe from "@/components/Recipe/AddNewRecipe";
 
 export const Recipes = () => {
   return (
     <Layout>
-      <RecipeList />
+      <AddNewRecipe />
     </Layout>
   );
 };

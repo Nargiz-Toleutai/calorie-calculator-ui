@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import RecipeItem, { Product } from "./RecipeItem";
+import RecipeItem from "./RecipeItem";
+import { Product } from "../Product/ProductItem";
 // import AddRecipeButton from "../buttons/AddRecipeButton";
 
 export interface Category {
@@ -46,27 +47,20 @@ export const RecipeList = () => {
 
   return (
     <div className="recipe-page">
-      <div className="header">
-        <h1>Home Chef Recipes</h1>
+      <div className="recipe">
+        <h2>Recipes</h2>
+        {recipes.map((recipe) => (
+          <RecipeItem
+            key={recipe.id}
+            name={recipe.name}
+            id={recipe.id}
+            products={recipe.products}
+          />
+        ))}
       </div>
-      <div className="body">
-        <div className="recipe">
-          <h2>Recipes</h2>
-          {recipes.map((recipe) => (
-            <RecipeItem
-              key={recipe.id}
-              name={recipe.name}
-              //   products={recipe.products.map((product) => product.name)}
-              id={recipe.id}
-              category={recipe.category}
-              products={[]}
-            />
-          ))}
-        </div>
-        <div>
-          <p>{category?.name}</p>
-          <p>{category?.icon}</p>
-        </div>
+      <div>
+        <p>{category?.name}</p>
+        <p>{category?.icon}</p>
       </div>
     </div>
   );

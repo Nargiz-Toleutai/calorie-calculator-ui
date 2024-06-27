@@ -11,20 +11,9 @@ interface Category {
   onClick: () => void;
 }
 
-const CategoryItem = ({ name, icon, onClick }: Category) => {
-  return (
-    <button onClick={onClick}>
-      <label>{icon}</label>
-      <h3>{name}</h3>
-    </button>
-  );
-};
-
 export const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [category, setCategory] = useState<Category | null>();
 
   useEffect(() => {
     const getProducts = async () => {
@@ -32,25 +21,26 @@ export const ProductList = () => {
         const result = await fetch("http://localhost:3001/products");
         const data = await result.json();
         setProducts(data);
-        setFilteredProducts(data);
       } catch (error) {
         console.error("Error fetching data", error);
       }
     };
 
-    const getCategories = async () => {
+    const getCategory = async () => {
       try {
         const result = await fetch("http://localhost:3001/categories");
-        const categoriesData = await result.json();
-        setCategories(categoriesData);
+        const data = await result.json();
+        setCategory(data);
       } catch (error) {
         console.error("Error fetching data", error);
       }
     };
 
     getProducts();
-    getCategories();
+    getCategory();
   }, []);
+
+  console.log(products);
 
   return (
     <>
@@ -60,7 +50,6 @@ export const ProductList = () => {
           id={product.id}
           name={product.name}
           unit={product.unit}
-          quantity={product.quantity}
           protein={product.protein}
           carbs={product.carbs}
           fat={product.fat}
@@ -68,6 +57,13 @@ export const ProductList = () => {
           image={product.image}
         />;
       })}
+      {category ? (
+        <p>
+          category: {category.name} {category.icon}{" "}
+        </p>
+      ) : (
+        <p>non</p>
+      )}
     </>
   );
 };
