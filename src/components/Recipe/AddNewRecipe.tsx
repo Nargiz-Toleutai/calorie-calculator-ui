@@ -41,6 +41,11 @@ const AddNewRecipe = () => {
     formState: { errors },
   } = useForm<Recipe>({
     resolver: zodResolver(RecipeValidator),
+    defaultValues: {
+      name: "",
+      categoryId: 1,
+      products: [],
+    },
   });
 
   console.log({ errors });
@@ -116,6 +121,7 @@ const AddNewRecipe = () => {
 
       const responseData = await response.json();
       setRecipes([...recipes, responseData]);
+      console.log("Recipe was added");
       reset();
     } catch (error) {
       console.error("Something went wrong", error);
@@ -146,10 +152,9 @@ const AddNewRecipe = () => {
         <label htmlFor="categoryId">Category</label>
         <select
           id="categoryId"
-          defaultValue={categories[0].id}
           {...register("categoryId", { valueAsNumber: true })}
         >
-          {categories.map((category) => (
+          {categories.map((category, i) => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>
