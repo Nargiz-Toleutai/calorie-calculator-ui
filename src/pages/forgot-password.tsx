@@ -11,7 +11,7 @@ const ForgotPasswordSchema = z.object({
 
 type ForgotPasswordFormData = z.infer<typeof ForgotPasswordSchema>;
 
-const ForgotPassword: React.FC = () => {
+const ForgotPassword = () => {
   const [message, setMessage] = useState<string | null>(null);
   const router = useRouter();
 
@@ -72,7 +72,7 @@ const ForgotPassword: React.FC = () => {
           )}
           <button
             type="submit"
-            className="mt-4 w-full py-2 px-4 bg-green-500 text-white font-bold rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            className="mt-4 w-full py-2 px-4 bg-green-600 hover:bg-green-800 text-white font-bold rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
           >
             Send Reset Link
           </button>

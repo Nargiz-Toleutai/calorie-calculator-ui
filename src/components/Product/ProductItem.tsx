@@ -11,10 +11,12 @@ export interface Product {
   fat: number;
   calories: number;
   image: string;
-  onClick?: () => void;
 }
 
-const ProductItem = ({
+type ProductItemProps = Product & { onClick?: () => void };
+
+const ProductItem: React.FC<Product> = ({
+  id,
   name,
   unit,
   protein,
@@ -22,30 +24,17 @@ const ProductItem = ({
   fat,
   calories,
   image,
-  id,
-}: Product) => {
-  const router = useRouter();
-
-  const handleEditButton = () => {
-    router.push(`/products/${id}`);
-  };
-
+}) => {
   return (
-    <li>
-      <div>
-        <p>name: {name}</p>
-        <p>unit: {unit}</p>
-        <p>protein: {protein}</p>
-        <p>carbs: {carbs}</p>
-        <p>fat: {fat}</p>
-        <p>calories: {calories}</p>
-        <p>image: {image}</p>
-      </div>
-      <div>
-        <button onClick={handleEditButton}>Edit</button>
-        <button>Delete</button>
-      </div>
-    </li>
+    <div className="border rounded-lg p-4 shadow-lg flex flex-col items-center">
+      <img src={image} alt={name} className="w-32 h-32 object-cover mb-4" />
+      <h2 className="text-lg font-bold mb-2">{name}</h2>
+      <p className="text-gray-500">{unit}</p>
+      <p className="text-gray-500">{protein}g Protein</p>
+      <p className="text-gray-500">{carbs}g Carbs</p>
+      <p className="text-gray-500">{fat}g Fat</p>
+      <p className="text-gray-500">{calories} Kcal</p>
+    </div>
   );
 };
 

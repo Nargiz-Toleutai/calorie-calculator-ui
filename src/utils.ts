@@ -12,3 +12,9 @@ export const getUserIdFromToken = (token: string) => {
 
   return JSON.parse(jsonPayload).userId;
 };
+
+export function cn(...classes: (string | false | null | undefined)[]): string {
+  return classes.filter(Boolean).join(" ");
+}
+
+export const SERVER_DOMAIN = "http://localhost:3001";

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Layout from "@/components/Layout";
 
 const UserDataValidator = z
   .object({
@@ -57,22 +58,91 @@ const Register = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h1>Registration</h1>
-      <label htmlFor="name">Name</label>
-      <input id="name" type="text" {...register("name")} />
-      {errors.name && <p>{errors.name.message}</p>}
-      <label htmlFor="email">Email</label>
-      <input id="email" type="text" {...register("email")} />
-      {errors.email && <p>{errors.email.message}</p>}
-      <label htmlFor="password">Password</label>
-      <input id="password" type="password" {...register("password")} />
-      {errors.password && (
-        <p className="error-message">{errors.password.message}</p>
-      )}
-      <button type="submit">Register</button>
-      {error && <p className="error-message">{error}</p>}
-    </form>
+    <Layout>
+      <div className="relative min-h-screen bg-cover bg-center flex items-center justify-center backdrop-blur">
+        <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8 max-w-md w-full">
+          <h1 className="text-2xl font-semibold mb-6 text-center">
+            Registration
+          </h1>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="mb-4">
+              <label
+                htmlFor="name"
+                className="block text-gray-700 font-medium mb-2"
+              >
+                Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                {...register("name")}
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                  errors.name ? "border-red-500" : ""
+                }`}
+              />
+              {errors.name && (
+                <p className="text-red-500 text-xs italic mt-2">
+                  {errors.name.message}
+                </p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="email"
+                className="block text-gray-700 font-medium mb-2"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                type="text"
+                {...register("email")}
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                  errors.email ? "border-red-500" : ""
+                }`}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-xs italic mt-2">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="password"
+                className="block text-gray-700 font-medium mb-2"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                {...register("password")}
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                  errors.password ? "border-red-500" : ""
+                }`}
+              />
+              {errors.password && (
+                <p className="text-red-500 text-xs italic mt-2">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Register
+            </button>
+            {error && (
+              <p className="text-red-500 text-xs italic mt-2 text-center">
+                {error}
+              </p>
+            )}
+          </form>
+        </div>
+      </div>
+    </Layout>
   );
 };
 
