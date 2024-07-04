@@ -1,13 +1,21 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Category } from "./RecipeList";
 import { Product } from "../Product/ProductItem";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 import { useRouter } from "next/router";
 import Link from "next/link";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../Select";
 
 const RecipeValidator = z
   .object({
@@ -47,6 +55,7 @@ const AddNewRecipe = () => {
     handleSubmit,
     setValue,
     reset,
+    control,
     formState: { errors },
   } = useForm<Recipe>({
     resolver: zodResolver(RecipeValidator),
@@ -106,9 +115,7 @@ const AddNewRecipe = () => {
   }, [token]);
 
   useEffect(() => {
-    if (selectedProducts && selectedProducts[0]) {
-      setValue("products", [selectedProducts[0], ...selectedProducts.slice(1)]);
-    }
+    setValue("products", selectedProducts);
   }, [selectedProducts, setValue]);
 
   const onSubmitForm = async (data: Recipe) => {
@@ -136,7 +143,10 @@ const AddNewRecipe = () => {
   };
 
   const handleAddProduct = (productId: number) => {
-    if (!selectedProducts.find((product) => product.productId === productId)) {
+    if (
+      productId &&
+      !selectedProducts.find((product) => product.productId === productId)
+    ) {
       setSelectedProducts([...selectedProducts, { productId }]);
     }
   };
@@ -148,12 +158,7 @@ const AddNewRecipe = () => {
   };
 
   return (
-    <div
-      className="relative min-h-screen bg-cover bg-center flex items-center justify-center"
-      style={{
-        backgroundImage: "url('./background-images/add-new-recipe-page.jpg')",
-      }}
-    >
+    <div className="relative min-h-screen bg-cover bg-center flex items-center justify-center">
       <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8 max-w-md w-full">
         <h1 className="text-2xl font-bold mb-6">Add New Recipe</h1>
         {authError && <p className="text-red-500">{authError}</p>}
@@ -205,7 +210,9 @@ const AddNewRecipe = () => {
               <select
                 id="product-list"
                 onChange={(e) => handleAddProduct(Number(e.target.value))}
-                className="block w-full rounded-md border-green-300 shadow-sm focus:border-green-300  focus:ring-green-500 focus:ring-opacity-50"
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                  errors.categoryId ? "border-red-500" : ""
+                }`}
               >
                 <option value="">Select a product</option>
                 {products.map((product) => (
@@ -233,7 +240,6 @@ const AddNewRecipe = () => {
                   </li>
                 ))}
               </ul>
-              <input type="hidden" {...register("products")} value={"hello"} />
             </div>
             {errors.products && (
               <p className="text-red-500">{errors.products.message}</p>

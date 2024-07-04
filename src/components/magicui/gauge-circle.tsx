@@ -1,6 +1,7 @@
 import { cn } from "./../../../lib/utils";
 
 interface Props {
+  name: string;
   max: number;
   value: number;
   min: number;
@@ -16,6 +17,7 @@ export default function GaugeCircle({
   gaugePrimaryColor,
   gaugeSecondaryColor,
   className,
+  name,
 }: Props) {
   const circumference = 2 * Math.PI * 45;
   const percentPx = circumference / 100;
@@ -101,8 +103,9 @@ export default function GaugeCircle({
         data-current-value={currentPercent}
         className="duration-[var(--transition-length)] delay-[var(--delay)] absolute inset-0 m-auto h-fit w-fit ease-linear animate-in fade-in"
       >
-        {currentPercent}
+        {Math.floor(currentPercent)}
       </span>
+      <h1>{name}</h1>
     </div>
   );
 }

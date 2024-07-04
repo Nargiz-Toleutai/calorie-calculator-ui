@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldError, useForm } from "react-hook-form";
 import { date, z } from "zod";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -38,6 +38,7 @@ const EditProduct = () => {
   const [data, setData] = useState<Product>();
   const [token, setToken] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
 
   const router = useRouter();
   const id = router.query.id;
@@ -159,14 +160,8 @@ const EditProduct = () => {
   };
 
   return (
-    <Layout>
-      <div
-        className="relative min-h-screen bg-cover bg-center flex items-center justify-center pt-32"
-        style={{
-          backgroundImage:
-            "url('../background-images/add-new-product-page.jpg')",
-        }}
-      >
+    <Layout imgUrl="/background-images/account-page-background.jpg">
+      <div className="relative min-h-screen bg-cover bg-center flex items-center justify-center pt-32">
         <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8 max-w-md w-full">
           <h1 className="text-2xl font-bold mb-6">Edit Product</h1>
           {authError && <p className="text-red-500">{authError}</p>}

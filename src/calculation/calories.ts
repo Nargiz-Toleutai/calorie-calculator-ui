@@ -51,7 +51,7 @@ export const calulateCalories = (
   const fatIntake = (calorieDeficit * 0.25) / 9;
 
   const carbsIntake = (calorieDeficit - proteinIntake * 4 - fatIntake * 9) / 4;
-  console.log(carbsIntake);
+
   //   const carbsPerKg = carbsIntake / weight;
   //   const fatPerKg = fatIntake / weight;
 

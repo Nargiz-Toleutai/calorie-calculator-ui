@@ -5,7 +5,7 @@ import AddNewProduct from "@/components/Product/AddNewProduct";
 
 export const AddNewProductePage = () => {
   return (
-    <Layout>
+    <Layout imgUrl="./background-images/add-new-recipe-page.jpg">
       <AddNewProduct />
     </Layout>
   );

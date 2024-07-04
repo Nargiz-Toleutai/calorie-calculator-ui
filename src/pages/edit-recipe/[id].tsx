@@ -23,8 +23,14 @@ import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Product } from "../../components/Product/ProductItem";
-import { Category } from "./../../components/Recipe/RecipeList";
+
 import Layout from "@/components/Layout";
+
+interface Category {
+  id: number;
+  name: string;
+  icon: string;
+}
 
 const RecipeValidator = z
   .object({
@@ -216,14 +222,8 @@ const EditRecipe = () => {
   };
 
   return (
-    <Layout>
-      <div
-        className="relative min-h-screen bg-cover bg-center flex items-center justify-center p-32"
-        style={{
-          backgroundImage:
-            "url('../background-images/add-new-recipe-page.jpg')",
-        }}
-      >
+    <Layout imgUrl="/background-images/add-new-recipe-page.jpg">
+      <div className="relative min-h-screen bg-cover bg-center flex items-center justify-center p-32">
         <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8 max-w-md w-full">
           <h1 className="text-2xl font-bold mb-6">Edit Recipe</h1>
           {authError && <p className="text-red-500">{authError}</p>}
@@ -338,6 +338,7 @@ const EditRecipe = () => {
           </form>
         </div>
       </div>
+      <Toaster />
     </Layout>
   );
 };

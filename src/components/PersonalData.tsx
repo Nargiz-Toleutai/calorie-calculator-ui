@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "./Select";
 import GaugeCircle from "./magicui/gauge-circle";
-import { calulateCalories } from "@/calculation/calories";
+import { calulateCalories, calulatePFCForGoal } from "@/calculation/calories";
 
 const AdditionalUserDataValidator = z
   .object({
@@ -47,6 +47,13 @@ const AdditionalUserDataValidator = z
 
 export type User = z.infer<typeof AdditionalUserDataValidator>;
 
+interface PFC {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
 const notify = () => {
   toast.success("Your personal info was updated");
 };
@@ -56,6 +63,12 @@ const PersonalData: React.FC = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [calorieTarget, setCalorieTarget] = useState<number | null>(null);
+  const [pfc, setPFC] = useState<PFC>({
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0,
+  });
   const router = useRouter();
 
   const {
@@ -138,6 +151,15 @@ const PersonalData: React.FC = () => {
         )
       );
       setCalorieTarget(newCalorieTarget);
+      const pfc = calulatePFCForGoal(
+        gender,
+        weight,
+        height,
+        age,
+        activityLevel,
+        targetDeficitPercent
+      );
+      setPFC(pfc);
     } catch (error) {
       console.error("Something went wrong!", error);
     }
@@ -158,6 +180,8 @@ const PersonalData: React.FC = () => {
       </Layout>
     );
   }
+
+  console.log({ pfc });
 
   const renderInputField = (
     label: string,
@@ -187,7 +211,7 @@ const PersonalData: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-cover bg-center">
-      <div className="max-w-4xl w-full mx-auto p-8 bg-white bg-opacity-80 backdrop-blur rounded-lg shadow-md">
+      <div className="max-w-4xl w-full mx-auto my-20 p-8 bg-white bg-opacity-80 backdrop-blur rounded-lg shadow-md">
         <h1 className="text-3xl font-bold mb-4">
           Calculate your daily calorie intake
         </h1>
@@ -412,22 +436,46 @@ const PersonalData: React.FC = () => {
           </button>
         </form>
         {calorieTarget !== null && calorieTarget > 0 && (
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">Your Calorie Target</h2>
-            <p className="text-lg">
-              Your daily calorie target is:{" "}
-              <span className="font-bold">{calorieTarget} kcal</span>
-            </p>
-          </div>
+          <>
+            <div className="mt-8">
+              <h2 className="text-2xl font-bold mb-4">Your Calorie Target</h2>
+              <p className="text-lg">
+                Your daily calorie target is:{" "}
+                <span className="font-bold">{calorieTarget} kcal</span>
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6 pt-6">
+              <GaugeCircle
+                name="Carbs"
+                max={400}
+                value={pfc.carbs}
+                min={0}
+                gaugePrimaryColor="red"
+                gaugeSecondaryColor="white"
+              />
+
+              <GaugeCircle
+                name="Protein"
+                max={200}
+                value={pfc.protein}
+                min={0}
+                gaugePrimaryColor="green"
+                gaugeSecondaryColor="white"
+              />
+
+              <GaugeCircle
+                name="Fat"
+                max={100}
+                value={pfc.fat}
+                min={0}
+                gaugePrimaryColor="white"
+                gaugeSecondaryColor="yellow"
+              />
+            </div>
+          </>
         )}
       </div>
-      <GaugeCircle
-        max={100}
-        value={5}
-        min={3}
-        gaugePrimaryColor="red"
-        gaugeSecondaryColor="blue"
-      />
+
       <Toaster />
     </div>
   );

@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import RecipeItem, { RecipeProps } from "./RecipeItem";
 import Link from "next/link";
-import { User } from "./../PersonalData";
-import Layout from "../Layout";
 
 const RecipeList: React.FC = () => {
-  const [user, setUserData] = useState<User | null>(null);
   const [recipes, setRecipes] = useState<RecipeProps | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,20 +20,6 @@ const RecipeList: React.FC = () => {
     if (!token) return;
     const fetchData = async () => {
       try {
-        //   const responseUserData = await fetch(
-        //     `http://localhost:3001/user_info`,
-        //     {
-        //       method: "GET",
-        //       headers: {
-        //         Authorization: `Bearer ${token}`,
-        //       },
-        //     }
-        //   );
-
-        //   if (!responseUserData.ok) {
-        //     throw new Error("Network response userData was not ok");
-        //   }
-
         const recipesData = await fetch(
           "http://localhost:3001/recipes/_with_portions",
           {
@@ -53,18 +36,15 @@ const RecipeList: React.FC = () => {
 
         const recipes = await recipesData.json();
 
-        // const user = await responseUserData.json();
-
-        console.log("Fetched user data:", user);
         console.log("Fetched recipes data:", recipes);
-        // setUserData(user);
+
         setRecipes(recipes);
       } catch (error) {
         console.error("Failed to fetch data", error);
       }
     };
     fetchData();
-  }, [token, user]);
+  }, [token]);
 
   if (!recipes) {
     return <div>Loading...</div>;
@@ -73,7 +53,6 @@ const RecipeList: React.FC = () => {
   const filteredRecipes = Object.keys(recipes.recipesByCategory).reduce(
     (acc, categoryName) => {
       const categoryData = recipes.recipesByCategory[categoryName];
-      console.log({ categoryData });
       const filteredRecipes = categoryData.recipes.filter(
         (recipe: any) =>
           recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -110,7 +89,7 @@ const RecipeList: React.FC = () => {
           href="/account"
           className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700 cursor-pointer"
         >
-          Your goal: {recipes.total.calories} Kcal
+          Change goal: {recipes.total.calories} Kcal
         </Link>
 
         <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">

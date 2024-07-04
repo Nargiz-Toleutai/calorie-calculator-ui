@@ -58,9 +58,9 @@ const Register = () => {
   };
 
   return (
-    <Layout>
-      <div className="relative min-h-screen bg-cover bg-center flex items-center justify-center backdrop-blur">
-        <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8 max-w-md w-full">
+    <Layout imgUrl="/background-images/login-page-background.jpg">
+      <div className="relative min-h-screen bg-cover bg-center flex items-center justify-center ">
+        <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8 max-w-md w-full backdrop-blur">
           <h1 className="text-2xl font-semibold mb-6 text-center">
             Registration
           </h1>

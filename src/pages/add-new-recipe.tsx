@@ -5,7 +5,7 @@ import AddNewRecipe from "@/components/Recipe/AddNewRecipe";
 
 export const AddNewRecipePage = () => {
   return (
-    <Layout>
+    <Layout imgUrl="./background-images/add-new-recipe-page.jpg">
       <AddNewRecipe />
     </Layout>
   );
