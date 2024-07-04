@@ -18,6 +18,7 @@ const ForgotPassword = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(ForgotPasswordSchema),
@@ -35,6 +36,7 @@ const ForgotPassword = () => {
 
       if (response.ok) {
         setMessage("Password reset link sent to your email.");
+        reset();
       } else {
         const errorData = await response.json();
         setMessage(errorData.error || "Something went wrong");

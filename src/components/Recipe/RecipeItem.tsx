@@ -1,206 +1,162 @@
-import React, { useEffect, useState } from "react";
-import { Category } from "./RecipeList";
-import { Product } from "../Product/ProductItem";
+import React from "react";
 import Link from "next/link";
-import { User } from "../PersonalData";
-import { calulatePFCForGoal } from "@/calculation/calories";
 
-interface RecipeItemProps {
+interface Product {
   id: number;
   name: string;
-  category: Category;
-  products: Product[];
-  onEdit: (id: number) => void; // ?
-  onDelete: (id: number) => void; // ?
-  totalCalories?: number[];
+  unit: string;
+  quantity: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  calories: number;
+  image: string;
+  portion: number;
 }
 
-const RecipeItem = ({ id, name, category, products }: RecipeItemProps) => {
-  const [data, setData] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [authError, setAuthError] = useState<string | null>(null);
+interface Category {
+  id: number;
+  name: string;
+  icon: string;
+}
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setToken(token);
-    if (!token) {
-      setAuthError("You are not authorized. Redirecting to login...");
-    }
-  }, []);
+interface Recipe {
+  id: number;
+  name: string;
+  categoryId: number;
+  category: Category;
+  products: Product[];
+}
 
-  function onEdit(id: number): void {
-    throw new Error("Function not implemented.");
-  }
-
-  function onDelete(id: number): void {
-    throw new Error("Function not implemented.");
-  }
-
-  const protein = products.reduce((acc, product) => acc + product.protein, 0);
-  const carbs = products.reduce((acc, product) => acc + product.carbs, 0);
-  const fat = products.reduce((acc, product) => acc + product.fat, 0);
-
-  useEffect(() => {
-    if (!token) return;
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`http://localhost:3001/user_info`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const res = await response.json();
-        console.log("Fetched data:", res);
-        setData(res);
-      } catch (error) {
-        console.error("Failed to fetch data", error);
-      }
+interface RecipesByCategory {
+  [category: string]: {
+    recipes: Recipe[];
+    total?: {
+      calories: number;
+      protein: number;
+      carbs: number;
+      fat: number;
     };
-    fetchData();
-  }, [token]);
+  };
+}
 
-  if (!data) {
-    // We don't have all the data for the user, probably a bug
-    return <p>Something went wrong</p>;
-  }
+export interface RecipeProps {
+  recipesByCategory: RecipesByCategory;
+  total: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
+}
 
-  const { weight, age, height, activityLevel, gender, targetDeficitPercent } =
-    data;
-  const goal = calulatePFCForGoal(
-    gender,
-    weight,
-    height,
-    age,
-    activityLevel,
-    targetDeficitPercent
-  );
-
+const RecipeItem: React.FC<RecipeProps> = ({ recipesByCategory, total }) => {
   const getCategoryColor = (categoryName: string) => {
     switch (categoryName) {
       case "Breakfast":
-        return "bg-blue-100 text-blue-700";
+        return "bg-blue-100 text-blue-700 bg-opacity-80 backdrop-blur";
       case "Lunch":
-        return "bg-orange-100 text-orange-700";
+        return "bg-orange-100 text-orange-700 bg-opacity-80 backdrop-blur";
       case "Dinner":
-        return "bg-green-100 text-green-700";
+        return "bg-green-100 text-green-700 bg-opacity-80 backdrop-blur";
       default:
         return "bg-gray-100 text-gray-700";
     }
   };
 
-  const calculatePortion = (
-    protein: number,
-    carbs: number,
-    fat: number,
-    category: string
-  ) => {
-    switch (category) {
-      case "Breakfast":
-        return Math.floor(protein * 0.3 + carbs * 0.3 + fat * 0.3);
-      case "Lunch":
-        return Math.floor(protein * 0.4 + carbs * 0.4 + fat * 0.4);
-      case "Dinner":
-        return Math.floor(protein * 0.3 + carbs * 0.3 + fat * 0.3);
-    }
-  };
-
-  // const adjustedProducts = products.map((product) => {
-  //   const proteinRatio = goal.protein / protein;
-  //   const carbsRatio = goal.carbs / carbs;
-  //   const fatRatio = goal.fat / fat;
-
-  //   const adjustedQuantity =
-  //     (product.quantity * (proteinRatio + carbsRatio + fatRatio)) / 3;
-
-  //   return {
-  //     ...product,
-  //     quantity: adjustedQuantity,
-  //   };
-  // });
-
   return (
-    <Link href={`/edit-recipe/${id}`} className="justify-end">
-      <div className="relative flex flex-col rounded-md items-center xl:container xl:mx-auto">
-        <div className="flex flex-col ">
-          <table className="w-full p-2 table-auto flex justify-center rounded-md flex-col items-center bg-white bg-opacity-80 backdrop-blur">
-            <div
-              className={`absolute left-0 top-1/2 transform -translate-y-1/2 py-1 px-2 rounded-r-lg h-full flex text-center ${getCategoryColor(
-                category.name
-              )}`}
-            >
-              <span
-                className="writing-mode-vertical-rl"
-                style={{
-                  writingMode: "vertical-rl",
-                  transform: "rotate(180deg)",
-                }}
-              >
-                {category.name}
-              </span>
-            </div>
+    <div className="relative flex flex-col rounded-md items-center xl:container xl:mx-auto">
+      {Object.keys(recipesByCategory).map((categoryName) => {
+        const categoryData = recipesByCategory[categoryName];
 
-            <div className="flex items-center mb-4">
-              <h3 className="ml-4 text-lg font-bold">{name}</h3>
-            </div>
-            <thead className="bg-green-100 text-green-600 text-sm leading-normal rounded-bl-lg rounded-tr-lg pl-6">
-              <tr className=" text-green-600 text-sm leading-normal ">
-                <th className="py-3 px-6 text-left">Products</th>
-                <th className="py-3 px-6 text-left">Protein</th>
-                <th className="py-3 px-6 text-left">Carbs</th>
-                <th className="py-3 px-6 text-left">Fat</th>
-                <th className="py-3 px-6 text-left">Portion</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-600 text-sm font-light pl-6">
-              {products.map((product, index) => (
-                <tr key={index} className="hover:bg-green-100 rounded">
-                  <td className="py-3 px-6 text-left whitespace-nowrap">
-                    {product.name}
-                  </td>
-                  <td className="py-3 px-8 text-right">{product.protein}</td>
-                  <td className="py-3 px-8 text-right">{product.carbs}</td>
-                  <td className="py-3 px-8 text-right">{product.fat}</td>
-                  <td className="py-3 px-8 text-right">
-                    {calculatePortion(
-                      product.protein,
-                      product.carbs,
-                      product.fat,
-                      category.name
+        return categoryData.recipes.map((recipe) => (
+          <Link
+            href={`/edit-recipe/${recipe.id}`}
+            key={recipe.id}
+            className="justify-end w-full"
+          >
+            <div className="relative flex flex-col rounded-md items-center mb-8 transform transition-transform duration-300 hover:scale-105">
+              <div className="flex flex-col w-full">
+                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                  <table
+                    className={`w-full text-sm text-left text-gray-500 dark:text-gray-400 table-auto ${getCategoryColor(
+                      recipe.category.name
+                    )} bg-opacity-80 backdrop-blur`}
+                  >
+                    <caption
+                      className={`${getCategoryColor(
+                        recipe.category.name
+                      )} bg-opacity-80 backdrop-blur p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 `}
+                    >
+                      {recipe.name}
+                      <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+                        {recipe.category.name}
+                      </p>
+                    </caption>
+                    <thead
+                      className={`${getCategoryColor(
+                        recipe.category.name
+                      )} text-xs  uppercase bg-gray-50 bg-opacity-80 backdrop-blur`}
+                    >
+                      <tr>
+                        <th className="px-6 py-3 ">Products</th>
+                        <th className="px-6 py-3">Protein</th>
+                        <th className="px-6 py-3">Carbs</th>
+                        <th className="px-6 py-3">Fat</th>
+                        <th className="px-6 py-3">Portion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recipe.products.map((product, index) => (
+                        <tr
+                          key={index}
+                          className={`${getCategoryColor(
+                            recipe.category.name
+                          )} border-b hover:bg-green-50 bg-opacity-80 backdrop-blur`}
+                        >
+                          <td className="px-6 py-4 font-medium whitespace-nowrap text-black hover:bg-green-50 bg-opacity-80 backdrop-blur">
+                            {product.name}
+                          </td>
+                          <td className="px-6 py-4">{product.protein}</td>
+                          <td className="px-6 py-4">{product.carbs}</td>
+                          <td className="px-6 py-4">{product.fat}</td>
+                          <td className="px-6 py-4">
+                            {product.portion?.toFixed(2) ?? 0}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    {categoryData.total && (
+                      <tfoot>
+                        <tr
+                          className={`${getCategoryColor(
+                            recipe.category.name
+                          )}  border-b border-t-2 border-t-slate-300 hover:bg-red-50 `}
+                        >
+                          <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+                            Total
+                          </td>
+                          <td className="px-6 py-4">
+                            {categoryData.total.protein}
+                          </td>
+                          <td className="px-6 py-4">
+                            {categoryData.total.carbs}
+                          </td>
+                          <td className="px-6 py-4">
+                            {categoryData.total.fat}
+                          </td>
+                          <td className="px-6 py-4"></td>
+                        </tr>
+                      </tfoot>
                     )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tr className="hover:bg-green-100">
-              <td className="py-3 px-6 text-right whitespace-nowrap">Total</td>
-              <td className="py-3 px-6 text-left whitespace-nowrap">
-                {protein}
-              </td>
-              <td className="py-3 px-6 text-left whitespace-nowrap">{carbs}</td>
-              <td className="py-3 px-6 text-left whitespace-nowrap">{fat}</td>
-            </tr>
-            <tr className="hover:bg-green-100">
-              <td className="py-3 px-6 text-right whitespace-nowrap">Goal</td>
-              <td className="py-3 px-6 text-left whitespace-nowrap">
-                {goal.protein}
-              </td>
-              <td className="py-3 px-6 text-left whitespace-nowrap">
-                {goal.carbs}
-              </td>
-              <td className="py-3 px-6 text-left whitespace-nowrap">
-                {goal.fat}
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </Link>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </Link>
+        ));
+      })}
+    </div>
   );
 };
 

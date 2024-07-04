@@ -1,180 +1,13 @@
-// import React, { useEffect, useState } from "react";
-// import RecipeItem from "./RecipeItem";
-// import { Product } from "../Product/ProductItem";
-// import Link from "next/link";
-// import {
-//   DragDropContext,
-//   Droppable,
-//   Draggable,
-//   DropResult,
-//   DraggableProvided,
-//   DroppableProvided,
-// } from "react-beautiful-dnd";
-
-// export interface Category {
-//   id: number;
-//   name: string;
-//   icon: string;
-// }
-
-// export interface Recipe {
-//   id: number;
-//   name: string;
-//   category: Category;
-//   products: Product[];
-// }
-
-// const RecipeList: React.FC = () => {
-//   const [recipes, setRecipes] = useState<Recipe[]>([]);
-//   const [searchTerm, setSearchTerm] = useState("");
-
-//   useEffect(() => {
-//     const getRecipes = async () => {
-//       try {
-//         const result = await fetch("http://localhost:3001/recipes");
-//         const data = await result.json();
-//         setRecipes(data);
-//       } catch (error) {
-//         console.error("Error fetching data", error);
-//       }
-//     };
-
-//     getRecipes();
-//   }, []);
-
-//   const handleViewDetails = (id: number) => {
-//     console.log(`Viewing details for recipe ID: ${id}`);
-//   };
-
-//   const handleEditRecipe = (id: number) => {
-//     console.log(`Editing recipe ID: ${id}`);
-//   };
-
-//   const handleDeleteRecipe = (id: number) => {
-//     console.log(`Deleting recipe ID: ${id}`);
-//   };
-
-//   const handleAddRecipe = () => {
-//     console.log("Adding a new recipe");
-//   };
-
-//   const handleOnDragEnd = async (result: DropResult) => {
-//     if (!result.destination) return;
-
-//     const items = Array.from(recipes);
-//     const [reorderedItem] = items.splice(result.source.index, 1);
-//     items.splice(result.destination.index, 0, reorderedItem);
-
-//     setRecipes(items);
-
-//     // need to create this request !!!
-//     try {
-//       const response = await fetch(
-//         "http://localhost:3001/recipes/update-order",
-//         {
-//           method: "PUT",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify(items),
-//         }
-//       );
-
-//       if (!response.ok) {
-//         throw new Error("Network response was not ok");
-//       }
-
-//       console.log("Recipe order saved");
-//     } catch (error) {
-//       console.error("Could not update recipe order", error);
-//     }
-//   };
-
-//   const filteredRecipes = recipes.filter(
-//     (recipe) =>
-//       recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//       recipe.category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//       recipe.products.some((product) =>
-//         product.name.toLowerCase().includes(searchTerm.toLowerCase())
-//       )
-//   );
-
-//   return (
-//     <div className="min-h-screen bg-gray-100 flex pt-16">
-//       <main className="flex-1 p-8">
-//         <div className="flex justify-between items-center">
-//           <h1 className="text-3xl font-bold">Recipes</h1>
-//           <input
-//             type="text"
-//             placeholder="Search anything..."
-//             className="w-1/3 p-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-//             onChange={(e) => setSearchTerm(e.target.value)}
-//           />
-//         </div>
-//         <div className="flex justify-end">
-//           <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
-//             <Link href={"/add-new-recipe"}>Add new Recipe</Link>
-//           </button>
-//         </div>
-
-//         {filteredRecipes.map((recipe, index) => (
-//           <div key={index}>
-//             <RecipeItem
-//               id={recipe.id}
-//               name={recipe.name}
-//               category={recipe.category}
-//               products={recipe.products}
-//               onEdit={handleEditRecipe}
-//               onDelete={handleDeleteRecipe}
-//             />
-
-//             {/* {recipe.products.map((product) => (
-//               <div key={product.id}>
-//                 <p>{product.protein}</p>
-//               </div>
-//             ))} */}
-//           </div>
-//         ))}
-//       </main>
-//     </div>
-//   );
-// };
-
-// export default RecipeList;
-
 import React, { useEffect, useState } from "react";
-import RecipeItem from "./RecipeItem";
-import { Product } from "../Product/ProductItem";
+import RecipeItem, { RecipeProps } from "./RecipeItem";
 import Link from "next/link";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-  DraggableProvided,
-  DroppableProvided,
-} from "react-beautiful-dnd";
-import CalorieCalculator from "../CalorieCalculator";
 import { User } from "./../PersonalData";
-import { calulateCalories, calulatePFCForGoal } from "@/calculation/calories";
-
-export interface Category {
-  id: number;
-  name: string;
-  icon: string;
-}
-
-export interface Recipe {
-  id: number;
-  name: string;
-  category: Category;
-  products: Product[];
-}
+import Layout from "../Layout";
 
 const RecipeList: React.FC = () => {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [user, setUserData] = useState<User | null>(null);
+  const [recipes, setRecipes] = useState<RecipeProps | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [userData, setUserData] = useState<User>();
   const [searchTerm, setSearchTerm] = useState("");
   const [token, setToken] = useState<string | null>(null);
 
@@ -188,107 +21,78 @@ const RecipeList: React.FC = () => {
 
   useEffect(() => {
     if (!token) return;
-    const getRecipes = async () => {
-      console.log({ token });
+    const fetchData = async () => {
       try {
-        const recipes = await fetch("http://localhost:3001/recipes", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const recipesData = await recipes.json();
+        //   const responseUserData = await fetch(
+        //     `http://localhost:3001/user_info`,
+        //     {
+        //       method: "GET",
+        //       headers: {
+        //         Authorization: `Bearer ${token}`,
+        //       },
+        //     }
+        //   );
 
-        const user = await fetch(`http://localhost:3001/user_info`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        //   if (!responseUserData.ok) {
+        //     throw new Error("Network response userData was not ok");
+        //   }
 
-        const userData = await user.json();
+        const recipesData = await fetch(
+          "http://localhost:3001/recipes/_with_portions",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-        setRecipes(recipesData);
-        setUserData(userData);
+        if (!recipesData.ok) {
+          throw new Error("Network response recipesData was not ok");
+        }
+
+        const recipes = await recipesData.json();
+
+        // const user = await responseUserData.json();
+
+        console.log("Fetched user data:", user);
+        console.log("Fetched recipes data:", recipes);
+        // setUserData(user);
+        setRecipes(recipes);
       } catch (error) {
-        console.error("Error fetching data", error);
+        console.error("Failed to fetch data", error);
       }
     };
+    fetchData();
+  }, [token, user]);
 
-    getRecipes();
-  }, [token]);
-
-  const handleViewDetails = (id: number) => {
-    console.log(`Viewing details for recipe ID: ${id}`);
-  };
-
-  const handleEditRecipe = (id: number) => {
-    console.log(`Editing recipe ID: ${id}`);
-  };
-
-  const handleDeleteRecipe = (id: number) => {
-    console.log(`Deleting recipe ID: ${id}`);
-  };
-
-  const handleAddRecipe = () => {
-    console.log("Adding a new recipe");
-  };
-
-  const handleOnDragEnd = async (result: DropResult) => {
-    if (!result.destination) return;
-
-    const items = Array.from(recipes);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setRecipes(items);
-
-    // need to create this request !!!
-    try {
-      const response = await fetch(
-        "http://localhost:3001/recipes/update-order",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(items),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      console.log("Recipe order saved");
-    } catch (error) {
-      console.error("Could not update recipe order", error);
-    }
-  };
-
-  const filteredRecipes = recipes.filter(
-    (recipe) =>
-      recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      recipe.category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      recipe.products.some((product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-  );
-
-  if (!userData) {
-    return <p>Something went wrong</p>;
+  if (!recipes) {
+    return <div>Loading...</div>;
   }
-  const { weight, age, height, activityLevel, gender, targetDeficitPercent } =
-    userData;
 
-  const caloriesFromPFC = calulateCalories(
-    gender,
-    weight,
-    height,
-    age,
-    activityLevel,
-    targetDeficitPercent
+  const filteredRecipes = Object.keys(recipes.recipesByCategory).reduce(
+    (acc, categoryName) => {
+      const categoryData = recipes.recipesByCategory[categoryName];
+      console.log({ categoryData });
+      const filteredRecipes = categoryData.recipes.filter(
+        (recipe: any) =>
+          recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          recipe.category.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          recipe.products.some((product: any) =>
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+      );
+      if (filteredRecipes.length > 0) {
+        acc[categoryName] = { ...categoryData, recipes: filteredRecipes };
+      }
+      return acc;
+    },
+    {} as RecipeProps["recipesByCategory"]
   );
+
+  console.log({ recipes });
 
   return (
     <main className="flex-1 pt-24 px-4 py-6 h-full">
@@ -306,53 +110,59 @@ const RecipeList: React.FC = () => {
           href="/account"
           className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700 cursor-pointer"
         >
-          Your goal: {caloriesFromPFC} Kcal
+          Your goal: {recipes.total.calories} Kcal
         </Link>
 
         <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
           <Link href={"/add-new-recipe"}>Add new Recipe</Link>
         </button>
       </div>
-
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-        <Droppable droppableId="recipes">
-          {(provided: DroppableProvided) => (
-            <div
-              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {filteredRecipes.map((recipe, index) => (
-                <Draggable
-                  key={recipe.id}
-                  draggableId={recipe.id.toString()}
-                  index={index}
-                >
-                  {(provided: DraggableProvided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      <RecipeItem
-                        id={recipe.id}
-                        name={recipe.name}
-                        category={recipe.category}
-                        products={recipe.products}
-                        onEdit={handleEditRecipe}
-                        onDelete={handleDeleteRecipe}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-full mt-8">
+        <table className="w-full text-sm text-left text-green-600">
+          <thead className="text-xs text-green-700 uppercase bg-green-50 ">
+            <tr>
+              <th className="px-6 py-3">Calories</th>
+              <th className="px-6 py-3">Protein</th>
+              <th className="px-6 py-3">Carbs</th>
+              <th className="px-6 py-3">Fat</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="bg-green-200  border-gray-700 hover:bg-red-50">
+              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                {recipes.total.calories}
+              </td>
+              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+                {recipes.total.protein}
+              </td>
+              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+                {recipes.total.carbs}
+              </td>
+              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+                {recipes.total.fat}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6 pt-6">
+        {Object.keys(filteredRecipes).map((categoryName) => (
+          <RecipeItem
+            key={categoryName}
+            recipesByCategory={{
+              [categoryName]: filteredRecipes[categoryName],
+            }}
+            total={recipes.total}
+          />
+        ))}
+      </div>
     </main>
   );
 };
 
 export default RecipeList;
+
+/*
+
+        ))}
+*/

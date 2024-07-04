@@ -15,7 +15,7 @@ export interface Product {
 
 type ProductItemProps = Product & { onClick?: () => void };
 
-const ProductItem: React.FC<Product> = ({
+const ProductItem = ({
   id,
   name,
   unit,
@@ -24,24 +24,20 @@ const ProductItem: React.FC<Product> = ({
   fat,
   calories,
   image,
-}) => {
+}: Product) => {
   return (
     <Link href={`/edit-product/${id}`} className="justify-end">
-      <div className="border rounded-lg p-4 shadow-lg flex flex-col items-center bg-white bg-opacity-80 backdrop-blur font-medium">
+      <div className="border rounded-lg p-4 shadow-lg flex flex-col items-center bg-white bg-opacity-80 backdrop-blur font-medium transform transition-transform duration-300 hover:scale-105">
         <img src={image} alt={name} className="w-32 h-32 object-cover mb-4" />
         <h2 className="text-lg font-bold mb-2">{name}</h2>
-
         <p className="text-gray-500 font-bold">
-          {protein}
-          {unit} Protein
+          {protein} {unit} Protein
         </p>
         <p className="text-gray-500">
-          {carbs}
-          {unit} Carbs
+          {carbs} {unit} Carbs
         </p>
         <p className="text-gray-500">
-          {fat}
-          {unit} Fat
+          {fat} {unit} Fat
         </p>
         <p className="text-gray-500">{calories} Kcal</p>
       </div>
