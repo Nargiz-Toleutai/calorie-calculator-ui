@@ -1,4 +1,3 @@
-// RecipeItem.tsx
 import React, { useEffect, useState } from "react";
 import { Category } from "./RecipeList";
 import { Product } from "../Product/ProductItem";
@@ -28,6 +27,7 @@ const RecipeItem = ({ id, name, category, products }: RecipeItemProps) => {
       setAuthError("You are not authorized. Redirecting to login...");
     }
   }, []);
+
   function onEdit(id: number): void {
     throw new Error("Function not implemented.");
   }
@@ -41,6 +41,7 @@ const RecipeItem = ({ id, name, category, products }: RecipeItemProps) => {
   const fat = products.reduce((acc, product) => acc + product.fat, 0);
 
   useEffect(() => {
+    if (!token) return;
     const fetchData = async () => {
       try {
         const response = await fetch(`http://localhost:3001/user_info`, {
@@ -93,11 +94,41 @@ const RecipeItem = ({ id, name, category, products }: RecipeItemProps) => {
     }
   };
 
+  const calculatePortion = (
+    protein: number,
+    carbs: number,
+    fat: number,
+    category: string
+  ) => {
+    switch (category) {
+      case "Breakfast":
+        return Math.floor(protein * 0.3 + carbs * 0.3 + fat * 0.3);
+      case "Lunch":
+        return Math.floor(protein * 0.4 + carbs * 0.4 + fat * 0.4);
+      case "Dinner":
+        return Math.floor(protein * 0.3 + carbs * 0.3 + fat * 0.3);
+    }
+  };
+
+  // const adjustedProducts = products.map((product) => {
+  //   const proteinRatio = goal.protein / protein;
+  //   const carbsRatio = goal.carbs / carbs;
+  //   const fatRatio = goal.fat / fat;
+
+  //   const adjustedQuantity =
+  //     (product.quantity * (proteinRatio + carbsRatio + fatRatio)) / 3;
+
+  //   return {
+  //     ...product,
+  //     quantity: adjustedQuantity,
+  //   };
+  // });
+
   return (
     <Link href={`/edit-recipe/${id}`} className="justify-end">
       <div className="relative flex flex-col rounded-md items-center xl:container xl:mx-auto">
         <div className="flex flex-col ">
-          <table className="w-full table-auto flex justify-center rounded-md flex-col items-center bg-white bg-opacity-80 backdrop-blur">
+          <table className="w-full p-2 table-auto flex justify-center rounded-md flex-col items-center bg-white bg-opacity-80 backdrop-blur">
             <div
               className={`absolute left-0 top-1/2 transform -translate-y-1/2 py-1 px-2 rounded-r-lg h-full flex text-center ${getCategoryColor(
                 category.name
@@ -117,34 +148,36 @@ const RecipeItem = ({ id, name, category, products }: RecipeItemProps) => {
             <div className="flex items-center mb-4">
               <h3 className="ml-4 text-lg font-bold">{name}</h3>
             </div>
-            <thead
-              className="bg-green-100
-            text-green-600
-            text-sm
-            leading-normal
-            rounded-bl-lg
-            rounded-tr-lg pl-6"
-            >
+            <thead className="bg-green-100 text-green-600 text-sm leading-normal rounded-bl-lg rounded-tr-lg pl-6">
               <tr className=" text-green-600 text-sm leading-normal ">
                 <th className="py-3 px-6 text-left">Products</th>
                 <th className="py-3 px-6 text-left">Protein</th>
                 <th className="py-3 px-6 text-left">Carbs</th>
-                <th className="py-3 px-6 text-left ">Fat</th>
+                <th className="py-3 px-6 text-left">Fat</th>
+                <th className="py-3 px-6 text-left">Portion</th>
               </tr>
             </thead>
             <tbody className="text-gray-600 text-sm font-light pl-6">
               {products.map((product, index) => (
-                <tr key={index} className=" hover:bg-green-100 rounded">
+                <tr key={index} className="hover:bg-green-100 rounded">
                   <td className="py-3 px-6 text-left whitespace-nowrap">
                     {product.name}
                   </td>
                   <td className="py-3 px-8 text-right">{product.protein}</td>
                   <td className="py-3 px-8 text-right">{product.carbs}</td>
                   <td className="py-3 px-8 text-right">{product.fat}</td>
+                  <td className="py-3 px-8 text-right">
+                    {calculatePortion(
+                      product.protein,
+                      product.carbs,
+                      product.fat,
+                      category.name
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
-            <tr className=" hover:bg-green-100">
+            <tr className="hover:bg-green-100">
               <td className="py-3 px-6 text-right whitespace-nowrap">Total</td>
               <td className="py-3 px-6 text-left whitespace-nowrap">
                 {protein}
@@ -152,7 +185,7 @@ const RecipeItem = ({ id, name, category, products }: RecipeItemProps) => {
               <td className="py-3 px-6 text-left whitespace-nowrap">{carbs}</td>
               <td className="py-3 px-6 text-left whitespace-nowrap">{fat}</td>
             </tr>
-            <tr className=" hover:bg-green-100">
+            <tr className="hover:bg-green-100">
               <td className="py-3 px-6 text-right whitespace-nowrap">Goal</td>
               <td className="py-3 px-6 text-left whitespace-nowrap">
                 {goal.protein}

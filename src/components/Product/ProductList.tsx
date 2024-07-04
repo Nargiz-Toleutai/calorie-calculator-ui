@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductItem, { Product } from "./ProductItem";
 import Layout from "../Layout";
 import { SERVER_DOMAIN } from "./../../utils";
+import Link from "next/link";
 
 interface Category {
   id: number;
@@ -39,28 +40,29 @@ export const ProductList = () => {
     getCategory();
   }, []);
 
+  console.log({ products });
+
   return (
-    <Layout>
+    <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pt-24 gap-6 p-6">
+        <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
+          <Link href={"/add-new-product"}>Add new Recipe</Link>
+        </button>
         {products.map((product) => (
-          <div
+          <ProductItem
+            id={product.id}
             key={product.id}
-            className="border rounded-lg p-4 shadow-lg flex flex-col items-center"
-          >
-            <img
-              src={`${SERVER_DOMAIN}${product.image}`}
-              alt={product.name}
-              className="w-32 h-32 object-cover mb-4"
-            />
-            <h2 className="text-lg font-bold mb-2">{product.name}</h2>
-            <p className="text-gray-500">{product.unit}</p>
-            <p className="text-gray-500">{product.protein}g Protein</p>
-            <p className="text-gray-500">{product.carbs}g Carbs</p>
-            <p className="text-gray-500">{product.fat}g Fat</p>
-            <p className="text-gray-500">{product.calories} Kcal</p>
-          </div>
+            image={`${SERVER_DOMAIN}${product.image}`}
+            name={product.name}
+            protein={product.protein}
+            carbs={product.carbs}
+            fat={product.fat}
+            calories={product.calories}
+            unit={product.unit}
+          />
         ))}
       </div>
+
       {category ? (
         <div className="flex items-center p-4">
           <p className="text-xl font-bold">{category.name}</p>
@@ -73,7 +75,7 @@ export const ProductList = () => {
       ) : (
         <p className="p-4 text-gray-500">No category selected</p>
       )}
-    </Layout>
+    </>
   );
 };
 

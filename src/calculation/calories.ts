@@ -1,4 +1,16 @@
 const getActivityLevelFactor = (activityLevel: number): number => {
+  return (
+    {
+      1: 1.2,
+      2: 1.375,
+      3: 1.55,
+      4: 1.725,
+      5: 1.9,
+    }[activityLevel] ?? 1.9
+  );
+
+  return [1.2, 1.375, 1.55, 1.725, 1.9][activityLevel + 1] ?? 1.9;
+
   switch (activityLevel) {
     case 1:
       return 1.2;
@@ -73,6 +85,7 @@ export const calulatePFCForGoal = (
   const carbsIntake = (calorieDeficit - proteinIntake * 4 - fatIntake * 9) / 4;
 
   return {
+    calories: Math.floor(calorieDeficit),
     protein: Math.floor(proteinIntake),
     carbs: Math.floor(carbsIntake),
     fat: Math.floor(fatIntake),

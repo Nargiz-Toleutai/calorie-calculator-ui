@@ -218,7 +218,7 @@ const EditRecipe = () => {
   return (
     <Layout>
       <div
-        className="relative min-h-screen bg-cover bg-center flex items-center justify-center"
+        className="relative min-h-screen bg-cover bg-center flex items-center justify-center p-32"
         style={{
           backgroundImage:
             "url('../background-images/add-new-recipe-page.jpg')",
@@ -227,7 +227,7 @@ const EditRecipe = () => {
         <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8 max-w-md w-full">
           <h1 className="text-2xl font-bold mb-6">Edit Recipe</h1>
           {authError && <p className="text-red-500">{authError}</p>}
-          <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-gray-700">
                 Recipe Name

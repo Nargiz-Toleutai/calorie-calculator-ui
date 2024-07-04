@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { MenuToggle } from "./MenuToggle";
+import MenuToggle from "./MenuToggle/MenuToggle";
 
 const NavigationButton = ({
   href,
@@ -33,17 +33,22 @@ const Navigation = () => {
     <div className="fixed top-5 w-full z-50 px-4">
       <nav className=" text-white bg-white shadow-sm bg-opacity-80 backdrop-blur rounded-bl-lg rounded-tr-lg xl:container xl:mx-auto h-16 flex items-center justify-between px-4 md:px-auto">
         <div className="flex items-center">
-          <img
-            src="/fitFuelLogo.png"
-            alt="FitFuel Logo"
-            className="h-12 mr-4"
-          />
-          {/* <h1 className="text-2xl font-bold hidden md:block">FitFuel</h1> */}
+          <Link href={"/"}>
+            <img
+              src="/fitFuelLogo.png"
+              alt="FitFuel Logo"
+              className="h-12 mr-4"
+            />
+          </Link>
         </div>
         <div className="md:hidden">
-          <MenuToggle toggle={toggleMenu} />
+          <MenuToggle />
         </div>
-        <ul className={`flex gap-4 ${isMenuOpen ? "block" : "hidden"} md:flex`}>
+        <ul
+          className={`flex gap-4 ${
+            isMenuOpen ? "flex flex-col items-center bg-white" : "hidden"
+          } md:flex md:flex-row md:gap-4`}
+        >
           {router.pathname !== "/" && (
             <li className="flex items-center">
               <NavigationButton href="/">Home</NavigationButton>

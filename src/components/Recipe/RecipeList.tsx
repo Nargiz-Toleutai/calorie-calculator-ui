@@ -187,7 +187,9 @@ const RecipeList: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!token) return;
     const getRecipes = async () => {
+      console.log({ token });
       try {
         const recipes = await fetch("http://localhost:3001/recipes", {
           method: "GET",
@@ -287,8 +289,6 @@ const RecipeList: React.FC = () => {
     activityLevel,
     targetDeficitPercent
   );
-
-  console.log({ caloriesFromPFC });
 
   return (
     <main className="flex-1 pt-24 px-4 py-6 h-full">

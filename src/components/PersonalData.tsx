@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "./Select";
 import { calulateCalories } from "@/calculation/calories";
+import GaugeCircle from "./magicui/gauge-circle";
 
 const AdditionalUserDataValidator = z
   .object({
@@ -123,17 +124,14 @@ const PersonalData = () => {
     if (!token) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:3001/user/${getUserIdFromToken(token)}`,
-        {
-          method: "PATCH",
-          body: JSON.stringify(formData),
-          headers: {
-            "content-type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:3001/user`, {
+        method: "PATCH",
+        body: JSON.stringify(formData),
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         console.error("Failed to update user data");
@@ -186,13 +184,7 @@ const PersonalData = () => {
   }
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center"
-      style={{
-        backgroundImage:
-          'url("/background-images/account-page-background.jpg")',
-      }}
-    >
+    <div className="min-h-screen flex items-center justify-center bg-cover bg-center">
       <div className="max-w-4xl w-full mx-auto p-8 bg-white bg-opacity-80 backdrop-blur rounded-lg shadow-md">
         <h1 className="text-3xl font-bold mb-4">
           Calculate your daily calorie intake
@@ -497,39 +489,16 @@ const PersonalData = () => {
           </div>
         )}
       </div>
+      <GaugeCircle
+        max={100}
+        value={5}
+        min={3}
+        gaugePrimaryColor={"red"}
+        gaugeSecondaryColor={"blue"}
+      />
       <Toaster />
     </div>
   );
 };
 
 export default PersonalData;
-
-{
-  /* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-              <div className="text-center">
-                <h3 className="text-xl font-bold">Daily rate</h3>
-                <p>For weight loss in a safe mode, the norm should be</p>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-green-500">Proteins</p>
-                <p className="text-2xl font-bold text-gray-700">73 g</p>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-green-500">Fats</p>
-                <p className="text-2xl font-bold text-gray-700">32 g</p>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-green-500">Carbs</p>
-                <p className="text-2xl font-bold text-gray-700">147 g</p>
-              </div>
-            </div>
-            <div className="flex justify-center mt-8">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-green-500">Kcal</p>
-                <p className="text-4xl font-bold text-gray-700">1457</p>
-              </div>
-              <div className="flex justify-center items-center mt-8">
-                <CircleProgress proteins={50} fats={30} carbs={70} />
-              </div>
-            </div> */
-}

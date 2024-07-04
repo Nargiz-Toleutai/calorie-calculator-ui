@@ -2,13 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import Select from "react-select";
+import { Category } from "./RecipeList";
+import { Product } from "../Product/ProductItem";
 import toast, { Toaster } from "react-hot-toast";
 
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Product } from "../Product/ProductItem";
-import { Category } from "./RecipeList";
 
 const RecipeValidator = z
   .object({
@@ -41,9 +40,6 @@ const AddNewRecipe = () => {
   >([]);
   const [token, setToken] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [newCategory, setNewCategory] = useState<string>("");
-  const [newProduct, setNewProduct] = useState<string>("");
-
   const router = useRouter();
 
   const {
@@ -151,52 +147,6 @@ const AddNewRecipe = () => {
     );
   };
 
-  const handleAddNewCategory = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/categories", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name: newCategory }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to add category");
-      }
-
-      const newCat = await response.json();
-      setCategories([...categories, newCat]);
-      setNewCategory("");
-    } catch (error) {
-      console.error("Something went wrong", error);
-    }
-  };
-
-  const handleAddNewProduct = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/products", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name: newProduct }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to add product");
-      }
-
-      const newProd = await response.json();
-      setProducts([...products, newProd]);
-      setNewProduct("");
-    } catch (error) {
-      console.error("Something went wrong", error);
-    }
-  };
-
   return (
     <div
       className="relative min-h-screen bg-cover bg-center flex items-center justify-center"
@@ -229,19 +179,19 @@ const AddNewRecipe = () => {
             <label htmlFor="categoryId" className="block text-gray-700">
               Category
             </label>
-
-            <Select
+            <select
               id="categoryId"
-              options={categories.map((category) => ({
-                value: category.id,
-                label: category.name,
-              }))}
-              onChange={(selectedOption) => {
-                setValue("categoryId", selectedOption?.value ?? 1);
-              }}
-              className="w-full"
-            />
-
+              {...register("categoryId", { valueAsNumber: true })}
+              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                errors.categoryId ? "border-red-500" : ""
+              }`}
+            >
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
             {errors.categoryId && (
               <p className="text-red-500">{errors.categoryId.message}</p>
             )}
@@ -251,38 +201,40 @@ const AddNewRecipe = () => {
             <label htmlFor="products" className="block text-gray-700">
               Products
             </label>
-
-            <Select
-              id="product-list"
-              options={products.map((product) => ({
-                value: product.id,
-                label: product.name,
-              }))}
-              onChange={(selectedOption) =>
-                selectedOption && handleAddProduct(selectedOption.value)
-              }
-              className="w-full"
-            />
-
-            <ul className="mt-2">
-              {selectedProducts.map((product) => (
-                <li
-                  key={product.productId}
-                  className="flex items-center justify-between bg-gray-100 p-2 rounded-md mt-5"
-                >
-                  <span>
-                    {products.find((p) => p.id === product.productId)?.name}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveProduct(product.productId)}
-                    className="text-red-500 hover:text-red-700"
+            <div className="mt-1">
+              <select
+                id="product-list"
+                onChange={(e) => handleAddProduct(Number(e.target.value))}
+                className="block w-full rounded-md border-green-300 shadow-sm focus:border-green-300  focus:ring-green-500 focus:ring-opacity-50"
+              >
+                <option value="">Select a product</option>
+                {products.map((product) => (
+                  <option key={product.id} value={product.id}>
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+              <ul className="mt-2">
+                {selectedProducts.map((product) => (
+                  <li
+                    key={product.productId}
+                    className="flex items-center justify-between bg-gray-100 p-2 rounded-md mt-5"
                   >
-                    ❌
-                  </button>
-                </li>
-              ))}
-            </ul>
+                    <span>
+                      {products.find((p) => p.id === product.productId)?.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveProduct(product.productId)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      ❌
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <input type="hidden" {...register("products")} value={"hello"} />
+            </div>
             {errors.products && (
               <p className="text-red-500">{errors.products.message}</p>
             )}

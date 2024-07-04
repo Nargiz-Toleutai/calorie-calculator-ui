@@ -6,7 +6,7 @@ import AddNewRecipe from "@/components/Recipe/AddNewRecipe";
 
 export const Dashboard = () => {
   return (
-    <Layout>
+    <Layout imgUrl="/background-images/products-page-background.jpg">
       <ProductList />
     </Layout>
   );

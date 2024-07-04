@@ -23,6 +23,10 @@ const config: Config = {
         "192": "48rem",
         "256": "64rem",
       },
+      translate: {
+        "150": "150%",
+        "200": "200%",
+      },
     },
   },
   plugins: [],

@@ -13,7 +13,7 @@ const Layout = ({ children, imgUrl }: LayoutProps) => {
     <div
       className="min-h-screen bg-fixed"
       style={{
-        backgroundImage: `url("${imgUrl}")`,
+        backgroundImage: imgUrl ? `url("${imgUrl}")` : undefined,
       }}
     >
       <Navigation />
