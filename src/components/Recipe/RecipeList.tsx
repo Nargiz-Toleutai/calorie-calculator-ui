@@ -21,7 +21,7 @@ const RecipeList: React.FC = () => {
     const fetchData = async () => {
       try {
         const recipesData = await fetch(
-          "http://localhost:3001/recipes/_with_portions",
+          `${process.env.NEXT_PUBLIC_API_URL}/recipes/_with_portions`,
           {
             method: "GET",
             headers: {

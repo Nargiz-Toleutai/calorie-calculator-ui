@@ -80,7 +80,7 @@ const AddNewRecipe = () => {
       if (!token) return;
       try {
         const responseCategories = await fetch(
-          `http://localhost:3001/categories`,
+          `${process.env.NEXT_PUBLIC_API_URL}/categories`,
           {
             method: "GET",
             headers: {
@@ -89,12 +89,15 @@ const AddNewRecipe = () => {
           }
         );
 
-        const responseProducts = await fetch(`http://localhost:3001/products`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const responseProducts = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/products`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!responseCategories.ok || !responseProducts.ok) {
           throw new Error("Network response was not ok");
@@ -120,14 +123,17 @@ const AddNewRecipe = () => {
 
   const onSubmitForm = async (data: Recipe) => {
     try {
-      const response = await fetch("http://localhost:3001/recipes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}}/recipes`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to submit data");

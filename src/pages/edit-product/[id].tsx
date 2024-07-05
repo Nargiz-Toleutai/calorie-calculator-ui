@@ -80,7 +80,7 @@ const EditProduct = () => {
       if (!token) return;
       try {
         const responseProduct = await fetch(
-          `http://localhost:3001/products/${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
           {
             method: "GET",
             headers: {
@@ -116,14 +116,17 @@ const EditProduct = () => {
 
   const onSubmitForm = async (data: Product) => {
     try {
-      const response = await fetch(`http://localhost:3001/products/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to submit data");
@@ -140,13 +143,16 @@ const EditProduct = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/products/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete data");

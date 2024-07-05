@@ -17,4 +17,4 @@ export function cn(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
-export const SERVER_DOMAIN = "http://localhost:3001";
+export const SERVER_DOMAIN = `${process.env.NEXT_PUBLIC_API_URL}`;

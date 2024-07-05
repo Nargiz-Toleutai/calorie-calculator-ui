@@ -92,10 +92,13 @@ const PersonalData: React.FC = () => {
     if (!token) return;
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/user_info`, {
-          method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/user_info`,
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (!response.ok) throw new Error("Network response was not ok");
         const res = await response.json();
         setData(res);
@@ -118,7 +121,7 @@ const PersonalData: React.FC = () => {
   const handleUpdateData = async (formData: User) => {
     if (!token) return;
     try {
-      const response = await fetch(`http://localhost:3001/user`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
         method: "PATCH",
         body: JSON.stringify(formData),
         headers: {

@@ -102,7 +102,7 @@ const EditRecipe = () => {
       if (!token) return;
       try {
         const responseCategories = await fetch(
-          `http://localhost:3001/categories`,
+          `${process.env.NEXT_PUBLIC_API_URL}/categories`,
           {
             method: "GET",
             headers: {
@@ -111,15 +111,18 @@ const EditRecipe = () => {
           }
         );
 
-        const responseProducts = await fetch(`http://localhost:3001/products`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const responseProducts = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/products`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const responseRecipe = await fetch(
-          `http://localhost:3001/recipes/${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/recipes/${id}`,
           {
             method: "GET",
             headers: {
@@ -166,14 +169,17 @@ const EditRecipe = () => {
 
   const onSubmitForm = async (data: Recipe) => {
     try {
-      const response = await fetch(`http://localhost:3001/recipes/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/recipes/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to submit data");
@@ -202,13 +208,16 @@ const EditRecipe = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/recipes/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/recipes/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete data");

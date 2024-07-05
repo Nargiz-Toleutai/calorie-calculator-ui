@@ -22,11 +22,14 @@ export const ProductList = () => {
     if (!token) return;
     const getProducts = async () => {
       try {
-        const result = await fetch("http://localhost:3001/products", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const result = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/products`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (result.status === 401) {
           setAuthError("You are not authorized. Redirecting to login...");
           return;

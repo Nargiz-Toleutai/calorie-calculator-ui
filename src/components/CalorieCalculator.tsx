@@ -63,7 +63,7 @@ const CalorieCalculator = () => {
     const fetchData = async () => {
       try {
         const responseUserData = await fetch(
-          `http://localhost:3001/user_info`,
+          `${process.env.NEXT_PUBLIC_API_URL}/user_info`,
           {
             method: "GET",
             headers: {
