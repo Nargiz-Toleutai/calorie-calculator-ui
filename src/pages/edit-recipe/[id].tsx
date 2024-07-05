@@ -292,7 +292,9 @@ const EditRecipe = () => {
                   label: product.name,
                 }))}
                 onChange={(selectedOption) =>
-                  selectedOption && handleAddProduct(selectedOption.value)
+                  selectedOption &&
+                  selectedOption.value &&
+                  handleAddProduct(selectedOption.value)
                 }
                 className="w-full"
               />

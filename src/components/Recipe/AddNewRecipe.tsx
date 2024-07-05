@@ -124,8 +124,10 @@ const AddNewRecipe = () => {
   }, [token]);
 
   useEffect(() => {
-    setValue("products", selectedProducts);
-  }, [selectedProducts, setValue]);
+    if (selectedProducts.length > 0 && selectedProducts[0]) {
+      setValue("products", [selectedProducts[0], ...selectedProducts.slice(1)]);
+    }
+  }, [products, selectedProducts, setValue]);
 
   const onSubmitForm = async (data: Recipe) => {
     try {
