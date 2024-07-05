@@ -6,7 +6,7 @@ import FlipText from "./magicui/flip-text";
 import Footer from "./Footer";
 
 const HomePageInfoPanel = () => {
-  const appUrl = "https://www.yourapp.com/download"; // Replace with your actual URL
+  const appUrl = "https://fitfuel-calorie-calculator.vercel.app/"; // Replace with your actual URL
 
   return (
     <div className="flex flex-col min-h-screen">
