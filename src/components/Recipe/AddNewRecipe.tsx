@@ -2,9 +2,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import { Category } from "./RecipeList";
+
 import { Product } from "../Product/ProductItem";
 import toast from "react-hot-toast";
+
+interface Category {
+  id: number;
+  name: string;
+  icon: string;
+}
 
 import { useRouter } from "next/router";
 import Link from "next/link";
