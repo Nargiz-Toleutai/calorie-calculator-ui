@@ -17,7 +17,6 @@ export default function GaugeCircle({
   gaugePrimaryColor,
   gaugeSecondaryColor,
   className,
-  name,
 }: Props) {
   const circumference = 2 * Math.PI * 45;
   const percentPx = circumference / 100;
@@ -25,7 +24,7 @@ export default function GaugeCircle({
 
   return (
     <div
-      className={cn("relative h-40 w-40 text-2xl font-semibold", className)}
+      className={cn("relative h-40 text-2xl font-semibold", className)}
       style={
         {
           "--circle-size": "100px",
@@ -43,7 +42,7 @@ export default function GaugeCircle({
     >
       <svg
         fill="none"
-        className="h-full w-full"
+        className="h-full w-full mb-4"
         strokeWidth="2"
         viewBox="0 0 100 100"
       >
@@ -105,7 +104,6 @@ export default function GaugeCircle({
       >
         {Math.floor(currentPercent)}
       </span>
-      <h1>{name}</h1>
     </div>
   );
 }

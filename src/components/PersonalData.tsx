@@ -15,6 +15,7 @@ import {
 } from "./Select";
 import GaugeCircle from "./magicui/gauge-circle";
 import { calulateCalories, calulatePFCForGoal } from "@/calculation/calories";
+import Link from "next/link";
 
 const AdditionalUserDataValidator = z
   .object({
@@ -213,8 +214,8 @@ const PersonalData: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cover bg-center">
-      <div className="max-w-4xl w-full mx-auto my-20 p-8 bg-white bg-opacity-80 backdrop-blur rounded-lg shadow-md">
+    <div className="min-h-screen flex items-center justify-center bg-center bg-contain bg-no-repeat">
+      <div className="max-w-4xl w-full mt-32 mb-32 p-8 bg-white bg-opacity-80 backdrop-blur rounded-lg shadow-md">
         <h1 className="text-3xl font-bold mb-4">
           Calculate your daily calorie intake
         </h1>
@@ -440,41 +441,61 @@ const PersonalData: React.FC = () => {
         </form>
         {calorieTarget !== null && calorieTarget > 0 && (
           <>
-            <div className="mt-8">
-              <h2 className="text-2xl font-bold mb-4">Your Calorie Target</h2>
-              <p className="text-lg">
-                Your daily calorie target is:{" "}
-                <span className="font-bold">{calorieTarget} kcal</span>
-              </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6 pt-6">
-              <GaugeCircle
-                name="Carbs"
-                max={400}
-                value={pfc.carbs}
-                min={0}
-                gaugePrimaryColor="red"
-                gaugeSecondaryColor="white"
-              />
+            <>
+              <div className="mt-8">
+                <h2 className="text-2xl font-bold mb-4">Your Calorie Target</h2>
+                <p className="text-lg">
+                  Your daily calorie target is:{" "}
+                  <span className="font-bold">{calorieTarget} kcal</span>
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6 pt-6 pb-6">
+                <div>
+                  <span className="items-center flex justify-center text-xl mb-4">
+                    Carbs
+                  </span>
+                  <GaugeCircle
+                    name="Carbs"
+                    max={400}
+                    value={pfc.carbs}
+                    min={0}
+                    gaugePrimaryColor="red"
+                    gaugeSecondaryColor="white"
+                  />
+                </div>
 
-              <GaugeCircle
-                name="Protein"
-                max={200}
-                value={pfc.protein}
-                min={0}
-                gaugePrimaryColor="green"
-                gaugeSecondaryColor="white"
-              />
+                <div>
+                  <span className="items-center flex justify-center text-xl mb-4">
+                    Protein
+                  </span>
+                  <GaugeCircle
+                    name="Protein"
+                    max={200}
+                    value={pfc.protein}
+                    min={0}
+                    gaugePrimaryColor="green"
+                    gaugeSecondaryColor="white"
+                  />
+                </div>
 
-              <GaugeCircle
-                name="Fat"
-                max={100}
-                value={pfc.fat}
-                min={0}
-                gaugePrimaryColor="white"
-                gaugeSecondaryColor="yellow"
-              />
-            </div>
+                <div>
+                  <span className="items-center flex justify-center text-xl mb-4">
+                    Carbs
+                  </span>
+                  <GaugeCircle
+                    name="Fat"
+                    max={100}
+                    value={pfc.fat}
+                    min={0}
+                    gaugePrimaryColor="yellow"
+                    gaugeSecondaryColor="white"
+                  />
+                </div>
+              </div>
+            </>
+            <button className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+              <Link href="/meals">View Recipes</Link>
+            </button>
           </>
         )}
       </div>
