@@ -5,7 +5,7 @@ import PersonalData from "@/components/PersonalData";
 
 export const Account = () => {
   return (
-    <Layout imgUrl="/background-images/account-page-background.jpg">
+    <Layout imgUrl="/background-images/account-page-background.jpeg">
       <PersonalData />
     </Layout>
   );

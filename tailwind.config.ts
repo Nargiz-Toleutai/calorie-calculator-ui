@@ -45,12 +45,6 @@ const config: Config = {
         },
       },
     },
-    backgroundSize: {
-      contain: "contain",
-    },
-    backgroundRepeat: {
-      "no-repeat": "no-repeat",
-    },
   },
   plugins: [],
 };
