@@ -25,7 +25,7 @@ const AdditionalUserDataValidator = z
     ),
     height: z.preprocess(
       Number,
-      z.number().min(30, { message: "Height should be a minimum of 30cm" })
+      z.number().min(50, { message: "Height should be a minimum of 50cm" })
     ),
     age: z.preprocess(
       Number,
@@ -170,48 +170,43 @@ const PersonalData: React.FC = () => {
   };
 
   if (authError) {
-    return (
-      <Layout>
-        <div>{authError}</div>
-      </Layout>
-    );
+    return <div>{authError}</div>;
   }
 
   if (!data) {
-    return (
-      <Layout>
-        <div>Loading...</div>
-      </Layout>
-    );
+    return <div>Loading...</div>;
   }
 
-  console.log({ pfc });
-
-  const renderInputField = (
+  const renderSelectField = (
     label: string,
-    type: string,
-    min: number,
-    max: number,
+    options: number[],
     field: keyof User,
     defaultValue: number
   ) => (
     <div>
       <label className="block text-sm font-medium text-gray-700">{label}</label>
-      <input
-        type={type}
+      <select
+        defaultValue={defaultValue}
         className={`cursor-pointer shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
           errors[field] ? "border-red-500" : ""
         }`}
-        min={min}
-        max={max}
-        defaultValue={defaultValue}
         {...register(field)}
-      />
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
       {errors[field] && (
         <p className="text-red-500 text-xs mt-1">{errors[field]?.message}</p>
       )}
     </div>
   );
+
+  const ageOptions = Array.from({ length: 121 }, (_, i) => i);
+  const heightOptions = Array.from({ length: 250 }, (_, i) => 30 + i);
+  const weightOptions = Array.from({ length: 541 }, (_, i) => 30 + i * 0.5);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-center bg-contain bg-no-repeat">
@@ -221,7 +216,12 @@ const PersonalData: React.FC = () => {
         </h1>
         <form onSubmit={handleSubmit(handleUpdateData)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {renderInputField("Age", "number", 18, 80, "age", data.age ?? 18)}
+            {renderSelectField(
+              "Age",
+              ageOptions,
+              "age",
+              !data.age ? 0 : data.age
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Gender
@@ -252,21 +252,17 @@ const PersonalData: React.FC = () => {
                 </p>
               )}
             </div>
-            {renderInputField(
-              "Height",
-              "number",
-              30,
-              250,
+            {renderSelectField(
+              "Height (cm)",
+              heightOptions,
               "height",
-              data.height ?? 30
+              !data.height ? 0 : data.height
             )}
-            {renderInputField(
-              "Weight",
-              "number",
-              40,
-              200,
+            {renderSelectField(
+              "Weight (kg)",
+              weightOptions,
               "weight",
-              data.weight ?? 40
+              !data.weight ? 0 : data.weight
             )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

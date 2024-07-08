@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -43,14 +43,14 @@ const Register = () => {
       );
 
       const responseData = await response.json();
-
+      localStorage.setItem("token", responseData.token);
       if (response.status === 201) {
         router.push("/");
       } else if (response.status === 409) {
         setError("User already exists. Redirecting to login page...");
         setTimeout(() => {
           router.push("/login");
-        }, 2000);
+        }, 1000);
       } else {
         setError(responseData.error || "Something went wrong");
       }
