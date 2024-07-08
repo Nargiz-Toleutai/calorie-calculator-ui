@@ -2,9 +2,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { green } from "@mui/material/colors";
 
 import { Product } from "../Product/ProductItem";
 import toast from "react-hot-toast";
+import {
+  MenuItem,
+  TextField,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Autocomplete,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface Category {
   id: number;
@@ -14,14 +26,6 @@ interface Category {
 
 import { useRouter } from "next/router";
 import Link from "next/link";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../Select";
 
 const RecipeValidator = z
   .object({
@@ -52,6 +56,7 @@ const AddNewRecipe = () => {
   const [selectedProducts, setSelectedProducts] = useState<
     { productId: number }[]
   >([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const router = useRouter();
@@ -155,7 +160,6 @@ const AddNewRecipe = () => {
       console.error("Something went wrong", error);
     }
   };
-  console.log({ errors });
 
   const handleAddProduct = (productId: number) => {
     if (
@@ -182,39 +186,77 @@ const AddNewRecipe = () => {
             <label htmlFor="name" className="block text-gray-700">
               Recipe Name
             </label>
-            <input
+            <TextField
               id="name"
               type="text"
               {...register("name")}
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                errors.name ? "border-red-500" : ""
-              }`}
+              fullWidth
+              variant="outlined"
+              error={!!errors.name}
+              helperText={errors.name?.message}
+              sx={{
+                backgroundColor: "white",
+                borderColor: "white",
+                borderRadius: "6px",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "green",
+                  },
+                },
+              }}
             />
-            {errors.name && (
-              <p className="text-red-500">{errors.name.message}</p>
-            )}
           </div>
 
           <div>
             <label htmlFor="categoryId" className="block text-gray-700">
               Category
             </label>
-            <select
+            <TextField
+              select
               id="categoryId"
+              placeholder="Search for a category"
               {...register("categoryId", { valueAsNumber: true })}
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                errors.categoryId ? "border-red-500" : ""
-              }`}
+              fullWidth
+              variant="outlined"
+              error={!!errors.categoryId}
+              helperText={errors.categoryId?.message}
+              sx={{
+                backgroundColor: "white",
+                borderColor: "white",
+                borderRadius: "6px",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "green",
+                  },
+                },
+              }}
             >
               {categories.map((category) => (
-                <option key={category.id} value={category.id}>
+                <MenuItem
+                  key={category.id}
+                  value={category.id}
+                  sx={{
+                    backgroundColor: "white",
+                    border: "none",
+                    borderRadius: "1px",
+                  }}
+                >
                   {category.name}
-                </option>
+                </MenuItem>
               ))}
-            </select>
-            {errors.categoryId && (
-              <p className="text-red-500">{errors.categoryId.message}</p>
-            )}
+            </TextField>
           </div>
 
           <div>
@@ -222,53 +264,90 @@ const AddNewRecipe = () => {
               Products
             </label>
             <div className="mt-1">
-              <select
-                id="product-list"
-                onChange={(e) => handleAddProduct(Number(e.target.value))}
-                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                  errors.categoryId ? "border-red-500" : ""
-                }`}
-              >
-                <option value="">Select a product</option>
-                {products.map((product) => (
-                  <option key={product.id} value={product.id}>
-                    {product.name}
-                  </option>
-                ))}
-              </select>
-              <ul className="mt-2">
+              <Controller
+                name="products"
+                control={control}
+                render={() => (
+                  <Autocomplete
+                    value={selectedProduct}
+                    onChange={(event, newValue) => {
+                      setSelectedProduct(newValue);
+                      if (newValue && newValue.id !== undefined) {
+                        handleAddProduct(newValue.id);
+                      }
+                    }}
+                    options={products}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        placeholder="Search for a product"
+                        error={!!errors.products}
+                        helperText={errors.products?.message}
+                        sx={{
+                          backgroundColor: "white",
+                          borderColor: "white",
+                          borderRadius: "6px",
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": {
+                              borderColor: "white",
+                            },
+                            "&:hover fieldset": {
+                              borderColor: "white",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "green",
+                            },
+                          },
+                        }}
+                      />
+                    )}
+                    noOptionsText="No product found"
+                  />
+                )}
+              />
+
+              <List className="mt-2">
                 {selectedProducts.map((product) => (
-                  <li
+                  <ListItem
                     key={product.productId}
                     className="flex items-center justify-between bg-gray-100 p-2 rounded-md mt-5"
                   >
-                    <span>
-                      {products.find((p) => p.id === product.productId)?.name}
-                    </span>
-                    <button
-                      type="button"
+                    <ListItemText
+                      primary={
+                        products.find((p) => p.id === product.productId)?.name
+                      }
+                      className="pl-2"
+                    />
+                    <IconButton
+                      edge="end"
                       onClick={() => handleRemoveProduct(product.productId)}
-                      className="text-red-500 hover:text-red-700"
+                      className="mr-1"
                     >
-                      ❌
-                    </button>
-                  </li>
+                      <DeleteIcon color="error" />
+                    </IconButton>
+                  </ListItem>
                 ))}
-              </ul>
+              </List>
             </div>
-            {errors.products && (
-              <p className="text-red-500">{errors.products.message}</p>
-            )}
           </div>
 
           <div className="flex justify-end">
-            <button
+            <Button
               onClick={notify}
               type="submit"
-              className="bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700"
+              variant="contained"
+              color="secondary"
+              sx={{
+                backgroundColor: green[500],
+                "&:hover": {
+                  backgroundColor: green[800],
+                },
+              }}
             >
               Add Recipe
-            </button>
+            </Button>
           </div>
           <div className="flex justify-between items-center mb-6">
             <Link href="/meals">
