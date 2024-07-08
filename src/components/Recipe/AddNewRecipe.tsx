@@ -132,7 +132,7 @@ const AddNewRecipe = () => {
   const onSubmitForm = async (data: Recipe) => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}}/recipes`,
+        `${process.env.NEXT_PUBLIC_API_URL}/recipes`,
         {
           method: "POST",
           headers: {
@@ -155,6 +155,7 @@ const AddNewRecipe = () => {
       console.error("Something went wrong", error);
     }
   };
+  console.log({ errors });
 
   const handleAddProduct = (productId: number) => {
     if (

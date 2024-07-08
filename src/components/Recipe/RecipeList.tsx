@@ -89,13 +89,17 @@ const RecipeList: React.FC = () => {
         >
           Change goal: {recipes.total.calories} Kcal
         </Link>
-
-        <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
-          <Link href={"/add-new-recipe"}>Add new Recipe</Link>
-        </button>
+        {Object.keys(recipes.recipesByCategory).length > 0 && (
+          <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
+            <Link href={"/add-new-recipe"}>Add new Recipe</Link>
+          </button>
+        )}
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-full mt-8">
         <table className="w-full text-sm text-left text-green-600">
+          <caption className="bg-opacity-80  bg-green-50 backdrop-blur p-4 uppercase font-semibold text-centre rtl:text-right text-green-900">
+            Your goal
+          </caption>
           <thead className="text-xs text-green-700 uppercase bg-green-50 ">
             <tr>
               <th className="px-6 py-3">Calories</th>
@@ -122,17 +126,29 @@ const RecipeList: React.FC = () => {
           </tbody>
         </table>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6 pt-6">
-        {Object.keys(filteredRecipes).map((categoryName) => (
-          <RecipeItem
-            key={categoryName}
-            recipesByCategory={{
-              [categoryName]: filteredRecipes[categoryName],
-            }}
-            total={recipes.total}
-          />
-        ))}
-      </div>
+      {!Object.keys(recipes.recipesByCategory).length ? (
+        <div className="flex flex-col items-center justify-center h-full py-10 backdrop-blur bg-opacity-80 bg-white sm:rounded-lg mt-20">
+          <p className="text-lg font-semibold text-gray-700">
+            You don't have any recipes
+          </p>
+          <p>Do you want to add some?</p>
+          <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
+            <Link href="/add-new-recipe">Add new Recipe</Link>
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-6">
+          {Object.keys(filteredRecipes).map((categoryName) => (
+            <RecipeItem
+              key={categoryName}
+              recipesByCategory={{
+                [categoryName]: filteredRecipes[categoryName],
+              }}
+              total={recipes.total}
+            />
+          ))}
+        </div>
+      )}
     </main>
   );
 };
