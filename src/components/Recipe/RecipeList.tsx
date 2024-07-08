@@ -129,7 +129,7 @@ const RecipeList: React.FC = () => {
       {!Object.keys(recipes.recipesByCategory).length ? (
         <div className="flex flex-col items-center justify-center h-full py-10 backdrop-blur bg-opacity-80 bg-white sm:rounded-lg mt-20">
           <p className="text-lg font-semibold text-gray-700">
-            You don't have any recipes
+            You don&apos;t have any recipes
           </p>
           <p>Do you want to add some?</p>
           <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">

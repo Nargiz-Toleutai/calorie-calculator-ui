@@ -1,30 +1,24 @@
-// import React from "react";
-
-// import Layout from "@/components/Layout";
-// import EditRecipe from "@/components/Recipe/EditRecipe";
-
-// export const EditRecipePage = () => {
-//   return (
-//     <Layout>
-//       <EditRecipe recipeId={1} />
-//     </Layout>
-//   );
-// };
-
-// export default EditRecipePage;
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import Select from "react-select";
-import toast, { Toaster } from "react-hot-toast";
-
+import { green } from "@mui/material/colors";
+import toast from "react-hot-toast";
+import {
+  MenuItem,
+  TextField,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Autocomplete,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Product } from "../../components/Product/ProductItem";
-
 import Layout from "@/components/Layout";
+import { Product } from "../../components/Product/ProductItem";
 
 interface Category {
   id: number;
@@ -55,7 +49,7 @@ const notifyUpdate = () => {
 };
 
 const notifyDelete = () => {
-  toast.success("Recipe was delete ❌");
+  toast.success("Recipe was deleted");
 };
 
 const EditRecipe = () => {
@@ -64,17 +58,19 @@ const EditRecipe = () => {
   const [selectedProducts, setSelectedProducts] = useState<
     { productId: number }[]
   >([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
 
   const router = useRouter();
-  const id = router.query.id;
+  const { id } = router.query;
 
   const {
     register,
     handleSubmit,
     setValue,
     reset,
+    control,
     formState: { errors },
   } = useForm<Recipe>({
     resolver: zodResolver(RecipeValidator),
@@ -86,16 +82,13 @@ const EditRecipe = () => {
   });
 
   useEffect(() => {
-    if (id === undefined) {
-      return;
-    }
     const storedToken = localStorage.getItem("token");
     setToken(storedToken);
     if (!storedToken) {
       setAuthError("You are not authorized. Redirecting to login...");
       return;
     }
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -146,12 +139,12 @@ const EditRecipe = () => {
         setCategories(resCategories);
         setProducts(resProducts);
         setSelectedProducts(resRecipe.products);
-        console.log(resRecipe);
         reset({
           name: resRecipe.name,
           categoryId: resRecipe.categoryId,
           products: resRecipe.products,
         });
+        setValue("categoryId", resRecipe.categoryId);
       } catch (error) {
         console.error("Failed to fetch data", error);
         setAuthError("Something went wrong. Please try again later.");
@@ -159,13 +152,13 @@ const EditRecipe = () => {
     };
 
     fetchData();
-  }, [token, reset, id]);
+  }, [token, reset, setValue, id]);
 
   useEffect(() => {
-    if (selectedProducts && selectedProducts[0]) {
+    if (selectedProducts.length > 0 && selectedProducts[0]) {
       setValue("products", [selectedProducts[0], ...selectedProducts.slice(1)]);
     }
-  }, [selectedProducts, setValue]);
+  }, [products, selectedProducts, setValue]);
 
   const onSubmitForm = async (data: Recipe) => {
     try {
@@ -185,17 +178,20 @@ const EditRecipe = () => {
         throw new Error("Failed to submit data");
       }
 
-      const responseData = await response.json();
-      console.log("Recipe was changed", responseData);
+      await response.json();
       notifyUpdate();
       router.push("/meals");
+      reset();
     } catch (error) {
       console.error("Something went wrong", error);
     }
   };
 
   const handleAddProduct = (productId: number) => {
-    if (!selectedProducts.find((product) => product.productId === productId)) {
+    if (
+      productId &&
+      !selectedProducts.find((product) => product.productId === productId)
+    ) {
       setSelectedProducts([...selectedProducts, { productId }]);
     }
   };
@@ -231,113 +227,191 @@ const EditRecipe = () => {
   };
 
   return (
-    <Layout imgUrl="/background-images/add-new-recipe-page.jpg">
+    <Layout imgUrl="/background-images/login-page-background.jpg">
       <div className="relative min-h-screen bg-cover bg-center flex items-center justify-center p-32">
         <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8 max-w-md w-full">
           <h1 className="text-2xl font-bold mb-6">Edit Recipe</h1>
           {authError && <p className="text-red-500">{authError}</p>}
-          <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-gray-700">
                 Recipe Name
               </label>
-              <input
+              <TextField
                 id="name"
                 type="text"
                 {...register("name")}
-                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                  errors.name ? "border-red-500" : ""
-                }`}
+                fullWidth
+                variant="outlined"
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                sx={{
+                  backgroundColor: "white",
+                  borderColor: "white",
+                  borderRadius: "6px",
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "white",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "white",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "green",
+                    },
+                  },
+                }}
               />
-              {errors.name && (
-                <p className="text-red-500">{errors.name.message}</p>
-              )}
             </div>
 
             <div>
               <label htmlFor="categoryId" className="block text-gray-700">
                 Category
               </label>
-
-              <Select
+              <TextField
+                select
                 id="categoryId"
-                options={categories.map((category) => ({
-                  value: category.id,
-                  label: category.name,
-                }))}
-                onChange={(selectedOption) => {
-                  setValue("categoryId", selectedOption?.value ?? 1);
+                {...register("categoryId")}
+                fullWidth
+                variant="outlined"
+                error={!!errors.categoryId}
+                helperText={errors.categoryId?.message}
+                sx={{
+                  backgroundColor: "white",
+                  borderColor: "white",
+                  borderRadius: "6px",
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "white",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "white",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "green",
+                    },
+                  },
                 }}
-                defaultValue={{
-                  value: categories.find((c) => c.id === Number(id))?.id,
-                  label: categories.find((c) => c.id === Number(id))?.name,
-                }}
-                className="w-full"
-              />
-
-              {errors.categoryId && (
-                <p className="text-red-500">{errors.categoryId.message}</p>
-              )}
+              >
+                {categories.map((category) => (
+                  <MenuItem
+                    key={category.id}
+                    value={category.id}
+                    sx={{
+                      backgroundColor: "transparent",
+                      border: "none",
+                      borderRadius: "1px",
+                    }}
+                  >
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </TextField>
             </div>
 
             <div>
               <label htmlFor="products" className="block text-gray-700">
                 Products
               </label>
+              <div className="mt-1">
+                <Controller
+                  name="products"
+                  control={control}
+                  render={() => (
+                    <Autocomplete
+                      value={selectedProduct}
+                      onChange={(event, newValue) => {
+                        setSelectedProduct(newValue);
+                        if (newValue && newValue.id !== undefined) {
+                          handleAddProduct(newValue.id);
+                        }
+                      }}
+                      options={products}
+                      getOptionLabel={(option) => option.name}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          placeholder="Search for a product"
+                          error={!!errors.products}
+                          helperText={errors.products?.message}
+                          sx={{
+                            backgroundColor: "white",
+                            borderColor: "white",
+                            borderRadius: "6px",
+                            "& .MuiOutlinedInput-root": {
+                              "& fieldset": {
+                                borderColor: "white",
+                              },
+                              "&:hover fieldset": {
+                                borderColor: "white",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "green",
+                              },
+                            },
+                          }}
+                        />
+                      )}
+                      noOptionsText="No product found"
+                    />
+                  )}
+                />
 
-              <Select
-                id="product-list"
-                options={products.map((product) => ({
-                  value: product.id,
-                  label: product.name,
-                }))}
-                onChange={(selectedOption) =>
-                  selectedOption &&
-                  selectedOption.value &&
-                  handleAddProduct(selectedOption.value)
-                }
-                className="w-full"
-              />
-
-              <ul className="mt-2">
-                {selectedProducts.map((product) => (
-                  <li
-                    key={product.productId}
-                    className="flex items-center justify-between bg-gray-100 p-2 rounded-md mt-5"
-                  >
-                    <span>
-                      {products.find((p) => p.id === product.productId)?.name}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveProduct(product.productId)}
-                      className="text-red-500 hover:text-red-700"
+                <List className="mt-2">
+                  {selectedProducts.map((product) => (
+                    <ListItem
+                      key={product.productId}
+                      className="flex items-center justify-between bg-gray-100 p-2 rounded-md mt-5"
                     >
-                      ❌
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              {errors.products && (
-                <p className="text-red-500">{errors.products.message}</p>
-              )}
+                      <ListItemText
+                        primary={
+                          products.find((p) => p.id === product.productId)?.name
+                        }
+                        className="pl-2"
+                      />
+                      <IconButton
+                        edge="end"
+                        onClick={() => handleRemoveProduct(product.productId)}
+                        className="mr-1"
+                      >
+                        <DeleteIcon color="error" />
+                      </IconButton>
+                    </ListItem>
+                  ))}
+                </List>
+              </div>
             </div>
 
             <div className="flex justify-between">
-              <button
+              <Button
                 onClick={handleDelete}
                 type="button"
-                className="hover:text-red-500 text-slate-600 text-sm py-2 px-4 underline-offset-1"
+                variant="contained"
+                color="secondary"
+                sx={{
+                  backgroundColor: "red",
+                  "&:hover": {
+                    backgroundColor: "darkred",
+                  },
+                }}
               >
                 Delete Recipe
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={notifyUpdate}
                 type="submit"
-                className="bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700"
+                variant="contained"
+                color="secondary"
+                sx={{
+                  backgroundColor: green[500],
+                  "&:hover": {
+                    backgroundColor: green[800],
+                  },
+                }}
               >
                 Update Recipe
-              </button>
+              </Button>
             </div>
             <div className="flex justify-between items-center mb-6">
               <Link href="/meals">
@@ -349,7 +423,6 @@ const EditRecipe = () => {
           </form>
         </div>
       </div>
-      <Toaster />
     </Layout>
   );
 };

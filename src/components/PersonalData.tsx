@@ -1,21 +1,23 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Layout from "./Layout";
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast, { Toaster } from "react-hot-toast";
+import DataSelector from "./DataSelector";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Link from "next/link";
+import GaugeCircle from "./magicui/gauge-circle";
 import {
-  Select,
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectPr,
   SelectTrigger,
   SelectValue,
 } from "./Select";
-import GaugeCircle from "./magicui/gauge-circle";
 import { calulateCalories, calulatePFCForGoal } from "@/calculation/calories";
-import Link from "next/link";
+import RadioButtonsGroup from "./RadioButtonsGroup";
 
 const AdditionalUserDataValidator = z
   .object({
@@ -112,11 +114,12 @@ const PersonalData: React.FC = () => {
   }, [token]);
 
   useEffect(() => {
-    if (!authError) return;
-    const timer = setTimeout(() => {
-      router.push("/login");
-    }, 3000);
-    return () => clearTimeout(timer);
+    if (authError) {
+      const timer = setTimeout(() => {
+        router.push("/login");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
   }, [authError, router]);
 
   const handleUpdateData = async (formData: User) => {
@@ -177,36 +180,92 @@ const PersonalData: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  const renderSelectField = (
-    label: string,
-    options: number[],
-    field: keyof User,
-    defaultValue: number
-  ) => (
-    <div>
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
-      <select
-        defaultValue={defaultValue}
-        className={`cursor-pointer shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-          errors[field] ? "border-red-500" : ""
-        }`}
-        {...register(field)}
-      >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-      {errors[field] && (
-        <p className="text-red-500 text-xs mt-1">{errors[field]?.message}</p>
-      )}
-    </div>
-  );
+  const ageOptions = Array.from({ length: 121 }, (_, i) => i + 18);
+  const heightOptions = Array.from({ length: 200 }, (_, i) => i + 50);
+  const weightOptions = Array.from({ length: 101 }, (_, i) => i + 40);
 
-  const ageOptions = Array.from({ length: 121 }, (_, i) => i);
-  const heightOptions = Array.from({ length: 250 }, (_, i) => 30 + i);
-  const weightOptions = Array.from({ length: 541 }, (_, i) => 30 + i * 0.5);
+  const activityLevels = [
+    {
+      value: 1,
+      label: "Sedentary",
+      description: "Mostly sitting or lying down, minimal physical activity.",
+    },
+    {
+      value: 2,
+      label: "Lightly Active",
+      description:
+        "Light physical activity, such as daily walks or light housework.",
+    },
+    {
+      value: 3,
+      label: "Moderately Active",
+      description:
+        "Regular physical activity, including exercise and more frequent movement.",
+    },
+    {
+      value: 4,
+      label: "Very Active",
+      description:
+        "High level of physical activity, including intense exercise and active work.",
+    },
+    {
+      value: 5,
+      label: "Super Active",
+      description:
+        "Extremely high physical activity, usually involving intense exercise routines and physically demanding work.",
+    },
+  ];
+
+  const deficitPercents = [
+    {
+      value: 10,
+      label: "10%",
+      description:
+        "Mild weight loss - Soft reduction, suitable for beginners or those wanting a gentle approach.",
+    },
+    {
+      value: 15,
+      label: "15%",
+      description:
+        "Moderate weight loss - Balanced reduction, good for gradual and sustainable weight loss.",
+    },
+    {
+      value: 20,
+      label: "20%",
+      description:
+        "Noticeable weight loss - More significant reduction, suitable for those with a clear weight loss goal.",
+    },
+    {
+      value: 25,
+      label: "25%",
+      description:
+        "Accelerated weight loss - Faster reduction, suitable for those looking for quicker results.",
+    },
+    {
+      value: 30,
+      label: "30%",
+      description:
+        "Aggressive weight loss - Significant reduction, suitable for those committed to rapid weight loss.",
+    },
+    {
+      value: 35,
+      label: "35%",
+      description:
+        "Intense weight loss - High reduction, suitable for those with experience in weight management.",
+    },
+    {
+      value: 40,
+      label: "40%",
+      description:
+        "Very intense weight loss - Very high reduction, suitable for those with significant weight loss experience.",
+    },
+    {
+      value: 45,
+      label: "45%",
+      description:
+        "Extreme weight loss - Maximum reduction, suitable for those under professional guidance.",
+    },
+  ];
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-center bg-contain bg-no-repeat">
@@ -216,55 +275,92 @@ const PersonalData: React.FC = () => {
         </h1>
         <form onSubmit={handleSubmit(handleUpdateData)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {renderSelectField(
-              "Age",
-              ageOptions,
-              "age",
-              !data.age ? 0 : data.age
-            )}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 m-0.5">
+                Age
+              </label>
+              <Controller
+                name="age"
+                control={control}
+                defaultValue={data.age ?? 18}
+                render={({ field }) => (
+                  <DataSelector
+                    name="Age"
+                    value={field.value}
+                    options={ageOptions}
+                    onChange={(event: SelectChangeEvent<number>) =>
+                      field.onChange(event.target.value)
+                    }
+                  />
+                )}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 m-0.5">
                 Gender
               </label>
-              <div className="mt-1 flex items-center">
-                <label className="inline-flex items-center cursor-pointer">
-                  <input
-                    type="radio"
-                    className="form-radio"
-                    value="male"
-                    {...register("gender")}
+              <Controller
+                name="gender"
+                control={control}
+                defaultValue={data.gender ?? "female"}
+                render={({ field }) => (
+                  <RadioButtonsGroup
+                    value={field.value}
+                    onChange={(event) => field.onChange(event.target.value)}
                   />
-                  <span className="ml-2">Male</span>
-                </label>
-                <label className="inline-flex items-center ml-6 cursor-pointer">
-                  <input
-                    type="radio"
-                    className="form-radio"
-                    value="female"
-                    {...register("gender")}
-                  />
-                  <span className="ml-2">Female</span>
-                </label>
-              </div>
+                )}
+              />
               {errors.gender && (
                 <p className="text-red-500 text-xs mt-1">
                   {errors.gender?.message}
                 </p>
               )}
             </div>
-            {renderSelectField(
-              "Height (cm)",
-              heightOptions,
-              "height",
-              !data.height ? 0 : data.height
-            )}
-            {renderSelectField(
-              "Weight (kg)",
-              weightOptions,
-              "weight",
-              !data.weight ? 0 : data.weight
-            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 m-0.5">
+                Height
+              </label>
+              <Controller
+                name="height"
+                control={control}
+                defaultValue={data.height ?? 50}
+                render={({ field }) => (
+                  <DataSelector
+                    name="Height (cm)"
+                    value={field.value}
+                    options={heightOptions}
+                    onChange={(event: SelectChangeEvent<number>) =>
+                      field.onChange(event.target.value)
+                    }
+                  />
+                )}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mt-1">
+                Weight
+              </label>
+              <Controller
+                name="weight"
+                control={control}
+                defaultValue={data.weight ?? 40}
+                render={({ field }) => (
+                  <DataSelector
+                    name="Weight (kg)"
+                    value={field.value}
+                    options={weightOptions}
+                    onChange={(event: SelectChangeEvent<number>) =>
+                      field.onChange(event.target.value)
+                    }
+                  />
+                )}
+              />
+            </div>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -275,47 +371,16 @@ const PersonalData: React.FC = () => {
                 control={control}
                 defaultValue={data.activityLevel ?? 1}
                 render={({ field }) => (
-                  <Select
+                  <SelectPr
                     {...field}
                     onValueChange={(value) => field.onChange(Number(value))}
                     value={field.value.toString()}
                   >
-                    <SelectTrigger className="w-[280px] bg-white">
+                    <SelectTrigger className="w-[280px] bg-white h-14 hover:border-red-600">
                       <SelectValue placeholder="Select your activity level" />
                     </SelectTrigger>
                     <SelectContent>
-                      {[
-                        {
-                          value: 1,
-                          label: "Sedentary",
-                          description:
-                            "Mostly sitting or lying down, minimal physical activity.",
-                        },
-                        {
-                          value: 2,
-                          label: "Lightly Active",
-                          description:
-                            "Light physical activity, such as daily walks or light housework.",
-                        },
-                        {
-                          value: 3,
-                          label: "Moderately Active",
-                          description:
-                            "Regular physical activity, including exercise and more frequent movement.",
-                        },
-                        {
-                          value: 4,
-                          label: "Very Active",
-                          description:
-                            "High level of physical activity, including intense exercise and active work.",
-                        },
-                        {
-                          value: 5,
-                          label: "Super Active",
-                          description:
-                            "Extremely high physical activity, usually involving intense exercise routines and physically demanding work.",
-                        },
-                      ].map(({ value, label, description }) => (
+                      {activityLevels.map(({ value, label, description }) => (
                         <SelectGroup key={value}>
                           <SelectItem value={value.toString()}>
                             {label}
@@ -326,7 +391,7 @@ const PersonalData: React.FC = () => {
                         </SelectGroup>
                       ))}
                     </SelectContent>
-                  </Select>
+                  </SelectPr>
                 )}
               />
               {errors.activityLevel && (
@@ -335,6 +400,7 @@ const PersonalData: React.FC = () => {
                 </p>
               )}
             </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Deficit Percent
@@ -344,65 +410,16 @@ const PersonalData: React.FC = () => {
                 control={control}
                 defaultValue={data.targetDeficitPercent ?? 10}
                 render={({ field }) => (
-                  <Select
+                  <SelectPr
                     {...field}
                     onValueChange={(value) => field.onChange(Number(value))}
                     value={field.value.toString()}
                   >
-                    <SelectTrigger className="w-[280px] bg-white">
+                    <SelectTrigger className="w-[280px] bg-white h-14">
                       <SelectValue placeholder="Select your deficit percent" />
                     </SelectTrigger>
                     <SelectContent>
-                      {[
-                        {
-                          value: 10,
-                          label: "10%",
-                          description:
-                            "Mild weight loss - Soft reduction, suitable for beginners or those wanting a gentle approach.",
-                        },
-                        {
-                          value: 15,
-                          label: "15%",
-                          description:
-                            "Moderate weight loss - Balanced reduction, good for gradual and sustainable weight loss.",
-                        },
-                        {
-                          value: 20,
-                          label: "20%",
-                          description:
-                            "Noticeable weight loss - More significant reduction, suitable for those with a clear weight loss goal.",
-                        },
-                        {
-                          value: 25,
-                          label: "25%",
-                          description:
-                            "Accelerated weight loss - Faster reduction, suitable for those looking for quicker results.",
-                        },
-                        {
-                          value: 30,
-                          label: "30%",
-                          description:
-                            "Aggressive weight loss - Significant reduction, suitable for those committed to rapid weight loss.",
-                        },
-                        {
-                          value: 35,
-                          label: "35%",
-                          description:
-                            "Intense weight loss - High reduction, suitable for those with experience in weight management.",
-                        },
-                        {
-                          value: 40,
-                          label: "40%",
-                          description:
-                            "Very intense weight loss - Very high reduction, suitable for those with significant weight loss experience.",
-                        },
-                        {
-                          value: 45,
-                          label: "45%",
-                          description:
-                            "Extreme weight loss - Maximum reduction, suitable for those under professional guidance.",
-                        },
-                      ].map(({ value, label, description }) => (
+                      {deficitPercents.map(({ value, label, description }) => (
                         <SelectGroup key={value}>
                           <SelectItem value={value.toString()}>
                             {label}
@@ -413,7 +430,7 @@ const PersonalData: React.FC = () => {
                         </SelectGroup>
                       ))}
                     </SelectContent>
-                  </Select>
+                  </SelectPr>
                 )}
               />
               {errors.targetDeficitPercent && (
@@ -423,11 +440,13 @@ const PersonalData: React.FC = () => {
               )}
             </div>
           </div>
+
           <input
             type="hidden"
             {...register("calorieTarget")}
             value={calorieTarget ?? data.calorieTarget}
           />
+
           <button
             type="submit"
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
@@ -435,67 +454,66 @@ const PersonalData: React.FC = () => {
             Calculate
           </button>
         </form>
+
         {calorieTarget !== null && calorieTarget > 0 && (
           <>
-            <>
-              <div className="mt-8">
-                <h2 className="text-2xl font-bold mb-4">Your Calorie Target</h2>
-                <p className="text-lg">
-                  Your daily calorie target is:{" "}
-                  <span className="font-bold">{calorieTarget} kcal</span>
-                </p>
+            <div className="mt-8">
+              <h2 className="text-2xl font-bold mb-4">Your Calorie Target</h2>
+              <p className="text-lg">
+                Your daily calorie target is:{" "}
+                <span className="font-bold">{calorieTarget} kcal</span>
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-6 pb-6">
+              <div>
+                <span className="items-center flex justify-center text-xl mb-4">
+                  Carbs
+                </span>
+                <GaugeCircle
+                  name="Carbs"
+                  max={400}
+                  value={pfc.carbs}
+                  min={0}
+                  gaugePrimaryColor="red"
+                  gaugeSecondaryColor="white"
+                />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6 pt-6 pb-6">
-                <div>
-                  <span className="items-center flex justify-center text-xl mb-4">
-                    Carbs
-                  </span>
-                  <GaugeCircle
-                    name="Carbs"
-                    max={400}
-                    value={pfc.carbs}
-                    min={0}
-                    gaugePrimaryColor="red"
-                    gaugeSecondaryColor="white"
-                  />
-                </div>
 
-                <div>
-                  <span className="items-center flex justify-center text-xl mb-4">
-                    Protein
-                  </span>
-                  <GaugeCircle
-                    name="Protein"
-                    max={200}
-                    value={pfc.protein}
-                    min={0}
-                    gaugePrimaryColor="green"
-                    gaugeSecondaryColor="white"
-                  />
-                </div>
-
-                <div>
-                  <span className="items-center flex justify-center text-xl mb-4">
-                    Carbs
-                  </span>
-                  <GaugeCircle
-                    name="Fat"
-                    max={100}
-                    value={pfc.fat}
-                    min={0}
-                    gaugePrimaryColor="yellow"
-                    gaugeSecondaryColor="white"
-                  />
-                </div>
+              <div>
+                <span className="items-center flex justify-center text-xl mb-4">
+                  Protein
+                </span>
+                <GaugeCircle
+                  name="Protein"
+                  max={200}
+                  value={pfc.protein}
+                  min={0}
+                  gaugePrimaryColor="green"
+                  gaugeSecondaryColor="white"
+                />
               </div>
-            </>
+
+              <div>
+                <span className="items-center flex justify-center text-xl mb-4">
+                  Fat
+                </span>
+                <GaugeCircle
+                  name="Fat"
+                  max={100}
+                  value={pfc.fat}
+                  min={0}
+                  gaugePrimaryColor="yellow"
+                  gaugeSecondaryColor="white"
+                />
+              </div>
+            </div>
+
             <button className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
               <Link href="/meals">View Recipes</Link>
             </button>
           </>
         )}
       </div>
-
       <Toaster />
     </div>
   );

@@ -115,7 +115,9 @@ const RecipeItem: React.FC<RecipeProps> = ({ recipesByCategory, total }) => {
                           )} border-b hover:bg-green-50 bg-opacity-80 backdrop-blur`}
                         >
                           <td className="px-6 py-4 font-medium whitespace-nowrap text-black hover:bg-green-50 bg-opacity-80 backdrop-blur">
-                            {product.name}
+                            <Link href={`/edit-product/${product.id}`}>
+                              {product.name}
+                            </Link>
                           </td>
                           <td className="px-6 py-4">{product.protein}</td>
                           <td className="px-6 py-4">{product.carbs}</td>

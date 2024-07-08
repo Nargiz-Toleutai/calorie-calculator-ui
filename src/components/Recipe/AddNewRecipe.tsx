@@ -248,7 +248,7 @@ const AddNewRecipe = () => {
                   key={category.id}
                   value={category.id}
                   sx={{
-                    backgroundColor: "white",
+                    backgroundColor: "transparent",
                     border: "none",
                     borderRadius: "1px",
                   }}
