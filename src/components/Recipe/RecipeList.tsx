@@ -71,8 +71,6 @@ const RecipeList: React.FC = () => {
     {} as RecipeProps["recipesByCategory"]
   );
 
-  console.log({ recipes });
-
   return (
     <main className="flex-1 pt-24 px-4 py-6 h-full">
       <div className="flex justify-between items-center w-full">
@@ -140,8 +138,3 @@ const RecipeList: React.FC = () => {
 };
 
 export default RecipeList;
-
-/*
-
-        ))}
-*/

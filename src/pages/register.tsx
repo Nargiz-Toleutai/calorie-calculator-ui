@@ -45,7 +45,7 @@ const Register = () => {
       const responseData = await response.json();
 
       if (response.status === 201) {
-        router.push("/login");
+        router.push("/");
       } else if (response.status === 409) {
         setError("User already exists. Redirecting to login page...");
         setTimeout(() => {

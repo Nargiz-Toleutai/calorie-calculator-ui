@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BookOpenText, ChefHat, Soup } from "lucide-react";
 import Link from "next/link";
 import AppQRCode from "@/components/AppQRCode";
@@ -6,8 +6,17 @@ import FlipText from "./magicui/flip-text";
 import Footer from "./Footer";
 
 const HomePageInfoPanel = () => {
+  const [token, setToken] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
   const appUrl = "https://fitfuel-calorie-calculator.vercel.app/"; // Replace with your actual URL
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setToken(token);
+    if (!token) {
+      setAuthError("You are not authorized. Redirecting to login...");
+    }
+  }, []);
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-grow">
@@ -31,7 +40,11 @@ const HomePageInfoPanel = () => {
               calories along.
             </p>
             <button className="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700 transition-colors">
-              <Link href="/account">Let&apos;s Start Now</Link>
+              {token ? (
+                <Link href="/account">Let&apos;s Start Now</Link>
+              ) : (
+                <Link href="/login">Let&apos;s Start Now</Link>
+              )}
             </button>
           </div>
         </div>
