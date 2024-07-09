@@ -180,6 +180,10 @@ const PersonalData: React.FC = () => {
   const ageOptions = Array.from({ length: 121 }, (_, i) => i + 18);
   const heightOptions = Array.from({ length: 200 }, (_, i) => i + 50);
   const weightOptions = Array.from({ length: 101 }, (_, i) => i + 40);
+  const genderOptions = [
+    { label: "Female", value: "female" },
+    { label: "Male", value: "male" },
+  ];
 
   const activityLevels = [
     {
@@ -305,6 +309,7 @@ const PersonalData: React.FC = () => {
                   <RadioButtonsGroup
                     value={field.value}
                     onChange={(event) => field.onChange(event.target.value)}
+                    options={genderOptions}
                   />
                 )}
               />

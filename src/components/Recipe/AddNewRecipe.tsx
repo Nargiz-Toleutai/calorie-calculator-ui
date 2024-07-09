@@ -352,7 +352,7 @@ const AddNewRecipe = () => {
                 },
               }}
             >
-              Add Recipe
+              Save Recipe
             </Button>
           </div>
           <div className="flex justify-between items-center mb-6">

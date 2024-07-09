@@ -99,11 +99,11 @@ const RecipeItem: React.FC<RecipeProps> = ({ recipesByCategory, total }) => {
                       )} text-xs  uppercase bg-gray-50 bg-opacity-80 backdrop-blur`}
                     >
                       <tr>
-                        <th className="px-6 py-3 ">Products</th>
-                        <th className="px-6 py-3">Protein</th>
-                        <th className="px-6 py-3">Carbs</th>
-                        <th className="px-6 py-3">Fat</th>
-                        <th className="px-6 py-3">Portion</th>
+                        <th className="px-3 py-3">Products</th>
+                        <th className="px-3 py-3">Protein</th>
+                        <th className="px-3 py-3">Carbs</th>
+                        <th className="px-3 py-3">Fat</th>
+                        <th className="px-3 py-3">Portion(g)</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -114,16 +114,16 @@ const RecipeItem: React.FC<RecipeProps> = ({ recipesByCategory, total }) => {
                             recipe.category.name
                           )} border-b hover:bg-green-50 bg-opacity-80 backdrop-blur`}
                         >
-                          <td className="px-6 py-4 font-medium whitespace-nowrap text-black hover:bg-green-50 bg-opacity-80 backdrop-blur">
+                          <td className="px-3 py-3 font-medium whitespace-nowrap text-black hover:bg-green-50 bg-opacity-80 backdrop-blur">
                             <Link href={`/edit-product/${product.id}`}>
                               {product.name}
                             </Link>
                           </td>
-                          <td className="px-6 py-4">{product.protein}</td>
-                          <td className="px-6 py-4">{product.carbs}</td>
-                          <td className="px-6 py-4">{product.fat}</td>
-                          <td className="px-6 py-4">
-                            {product.portion?.toFixed(2) ?? 0}
+                          <td className="px-3 py-3">{product.protein}</td>
+                          <td className="px-3 py-3">{product.carbs}</td>
+                          <td className="px-3 py-3">{product.fat}</td>
+                          <td className="px-4 py-3">
+                            {Math.floor(product.portion)}
                           </td>
                         </tr>
                       ))}
@@ -135,19 +135,19 @@ const RecipeItem: React.FC<RecipeProps> = ({ recipesByCategory, total }) => {
                             recipe.category.name
                           )}  border-b border-t-2 border-t-slate-300 hover:bg-red-50 `}
                         >
-                          <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+                          <td className="px-3 py-3 font-medium text-gray-900 whitespace-nowrap ">
                             Total
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-3 py-3">
                             {categoryData.total.protein}
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-3 py-3">
                             {categoryData.total.carbs}
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-3 py-3">
                             {categoryData.total.fat}
                           </td>
-                          <td className="px-6 py-4"></td>
+                          <td className="px-3 py-3"></td>
                         </tr>
                       </tfoot>
                     )}

@@ -1,10 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, ChangeEvent } from "react";
 import { useForm, FieldError, Controller } from "react-hook-form";
+import Image from "next/image";
 import { z } from "zod";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { TextField, Button } from "@mui/material";
+import DataSelector from "../DataSelector";
+import RadioButtonsGroup from "../RadioButtonsGroup";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -22,19 +26,19 @@ const ProductValidator = z
     unit: z.string().min(1, { message: "Unit should not be empty" }),
     quantity: z.preprocess(
       (val) => Number(val),
-      z.number().min(0, { message: "Quantity should be non-negative" })
+      z.number().nonnegative({ message: "Quantity should be non-negative" })
     ),
     protein: z.preprocess(
       (val) => Number(val),
-      z.number().min(0, { message: "Protein should be non-negative" })
+      z.number().nonnegative({ message: "Protein should be non-negative" })
     ),
     carbs: z.preprocess(
       (val) => Number(val),
-      z.number().min(0, { message: "Carbs should be non-negative" })
+      z.number().nonnegative({ message: "Carbs should be non-negative" })
     ),
     fat: z.preprocess(
       (val) => Number(val),
-      z.number().min(0, { message: "Fat should be non-negative" })
+      z.number().nonnegative({ message: "Fat should be non-negative" })
     ),
     calories: z.preprocess(
       (val) => Number(val),
@@ -80,11 +84,13 @@ const AddNewProduct = () => {
     reset,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm<Product>({
     resolver: zodResolver(ProductValidator),
     defaultValues: {
       portion: 0,
+      quantity: 100,
     },
   });
 
@@ -103,11 +109,13 @@ const AddNewProduct = () => {
 
   useEffect(() => {
     const calculateCalories = () => {
-      const calories = protein * 4 + carbs * 4 + fat * 9;
+      const calories = Math.floor(protein * 4 + carbs * 4 + fat * 9);
       setValue("calories", calories);
     };
 
-    calculateCalories();
+    if (protein && carbs && fat) {
+      calculateCalories();
+    }
   }, [protein, carbs, fat, setValue]);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -167,6 +175,15 @@ const AddNewProduct = () => {
     }
   };
 
+  const unitOptions = [
+    { label: "grams", value: "g" },
+    { label: "liters", value: "l" },
+  ];
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.target.value = event.target.value.replace(",", ".");
+  };
+
   return (
     <div className="relative min-h-screen bg-cover bg-center flex items-center justify-center">
       <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8 w-full overscroll-contain max-w-md mt-24">
@@ -177,30 +194,53 @@ const AddNewProduct = () => {
             <label htmlFor="name" className="block text-gray-700">
               Product Name
             </label>
-            <input
+            <TextField
               id="name"
               type="text"
               {...register("name")}
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                errors.name ? "border-red-500" : ""
-              }`}
+              fullWidth
+              variant="outlined"
+              error={!!errors.name}
+              helperText={errors.name?.message}
+              inputProps={{ step: 0.01 }}
+              sx={{
+                m: 1,
+                minWidth: 120,
+                margin: "0",
+                backgroundColor: "white",
+                borderColor: "white",
+                borderRadius: "6px",
+
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "green",
+                  },
+                },
+              }}
             />
-            {errors.name && (
-              <p className="text-red-500">{errors.name.message as string}</p>
-            )}
           </div>
 
           <div>
             <label htmlFor="unit" className="block text-gray-700">
               Unit
             </label>
-            <input
-              id="unit"
-              type="text"
-              {...register("unit")}
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                errors.unit ? "border-red-500" : ""
-              }`}
+            <Controller
+              name="unit"
+              control={control}
+              defaultValue={product?.unit ?? "g"}
+              render={({ field }) => (
+                <RadioButtonsGroup
+                  value={field.value}
+                  onChange={(event) => field.onChange(event.target.value)}
+                  options={unitOptions}
+                />
+              )}
             />
             {errors.unit && (
               <p className="text-red-500">{errors.unit.message as string}</p>
@@ -211,91 +251,167 @@ const AddNewProduct = () => {
             <label htmlFor="quantity" className="block text-gray-700">
               Quantity
             </label>
-            <input
+            <TextField
               id="quantity"
               type="number"
               {...register("quantity")}
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                errors.quantity ? "border-red-500" : ""
-              }`}
+              fullWidth
+              variant="outlined"
+              error={!!errors.quantity}
+              helperText={errors.quantity?.message}
+              InputProps={{
+                readOnly: true,
+              }}
+              sx={{
+                backgroundColor: "transparent",
+                border: "none",
+                boxShadow: "none",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "transparent",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "transparent",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "transparent",
+                  },
+                },
+              }}
             />
-            {errors.quantity && (
-              <p className="text-red-500">
-                {errors.quantity.message as string}
-              </p>
-            )}
           </div>
 
           <div>
             <label htmlFor="protein" className="block text-gray-700">
               Protein
             </label>
-            <input
+            <TextField
               id="protein"
               type="number"
-              {...register("protein")}
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                errors.protein ? "border-red-500" : ""
-              }`}
+              inputProps={{ step: 0.01 }}
+              {...register("protein", { valueAsNumber: true })}
+              fullWidth
+              variant="outlined"
+              error={!!errors.protein}
+              helperText={errors.protein?.message}
+              onChange={handleInputChange}
+              sx={{
+                backgroundColor: "white",
+                borderRadius: "6px",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "green",
+                  },
+                },
+              }}
             />
-            {errors.protein && (
-              <p className="text-red-500">{errors.protein.message as string}</p>
-            )}
           </div>
 
           <div>
             <label htmlFor="carbs" className="block text-gray-700">
               Carbs
             </label>
-            <input
+            <TextField
               id="carbs"
               type="number"
+              inputProps={{ step: 0.01 }}
               {...register("carbs")}
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                errors.carbs ? "border-red-500" : ""
-              }`}
+              fullWidth
+              variant="outlined"
+              error={!!errors.carbs}
+              helperText={errors.carbs?.message}
+              sx={{
+                backgroundColor: "white",
+                borderRadius: "6px",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "green",
+                  },
+                },
+              }}
             />
-            {errors.carbs && (
-              <p className="text-red-500">{errors.carbs.message as string}</p>
-            )}
           </div>
 
           <div>
             <label htmlFor="fat" className="block text-gray-700">
               Fat
             </label>
-            <input
+            <TextField
               id="fat"
               type="number"
               {...register("fat")}
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                errors.fat ? "border-red-500" : ""
-              }`}
+              fullWidth
+              variant="outlined"
+              error={!!errors.fat}
+              helperText={errors.fat?.message}
+              inputProps={{ step: 0.01 }}
+              sx={{
+                backgroundColor: "white",
+                borderRadius: "6px",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "green",
+                  },
+                },
+              }}
             />
-            {errors.fat && (
-              <p className="text-red-500">{errors.fat.message as string}</p>
-            )}
           </div>
 
-          <div>
-            <label htmlFor="calories" className="block text-gray-700">
-              Calories
-            </label>
-            <input
-              id="calories"
-              type="number"
-              {...register("calories")}
-              readOnly
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                errors.calories ? "border-red-500" : ""
-              }`}
-            />
-            {errors.calories && (
-              <p className="text-red-500">
-                {errors.calories.message as string}
-              </p>
-            )}
-          </div>
+          {protein && carbs && fat ? (
+            <div>
+              <label htmlFor="calories" className="block text-gray-700">
+                Calories
+              </label>
+              <TextField
+                id="calories"
+                type="number"
+                {...register("calories")}
+                fullWidth
+                variant="outlined"
+                error={!!errors.calories}
+                helperText={errors.calories?.message}
+                InputProps={{
+                  readOnly: true,
+                }}
+                sx={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  boxShadow: "none",
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "transparent",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "transparent",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "transparent",
+                    },
+                  },
+                }}
+              />
+            </div>
+          ) : (
+            <></>
+          )}
 
           <input id="portion" type="hidden" {...register("portion")} />
 
@@ -325,10 +441,12 @@ const AddNewProduct = () => {
           </div>
           {preview && (
             <div className="mt-4">
-              <img
+              <Image
                 src={preview as string}
                 alt="Image Preview"
                 className="w-full h-auto rounded-md"
+                height={50}
+                width={50}
               />
               <button
                 type="button"

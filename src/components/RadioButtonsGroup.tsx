@@ -9,6 +9,7 @@ import { styled } from "@mui/material";
 interface RadioButtonsGroupProps {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  options: { label: string; value: string }[];
 }
 
 const GreenRadio = styled(Radio)(({ theme }) => ({
@@ -18,29 +19,27 @@ const GreenRadio = styled(Radio)(({ theme }) => ({
   },
 }));
 
-interface RadioButtonsGroupProps {
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
 const RadioButtonsGroup: React.FC<RadioButtonsGroupProps> = ({
   value,
   onChange,
+  options,
 }) => {
   return (
     <FormControl>
       <RadioGroup
-        aria-labelledby="demo-radio-buttons-group-label"
+        aria-labelledby="radio-buttons-group-label"
         value={value}
         onChange={onChange}
         name="radio-buttons-group"
       >
-        <FormControlLabel
-          value="female"
-          control={<GreenRadio />}
-          label="Female"
-        />
-        <FormControlLabel value="male" control={<GreenRadio />} label="Male" />
+        {options.map((option) => (
+          <FormControlLabel
+            key={option.value}
+            value={option.value}
+            control={<GreenRadio />}
+            label={option.label}
+          />
+        ))}
       </RadioGroup>
     </FormControl>
   );
