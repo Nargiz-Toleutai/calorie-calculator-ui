@@ -8,7 +8,7 @@ import Layout from "@/components/Layout";
 
 const UserDataValidator = z
   .object({
-    email: z.string().email().min(5, {
+    email: z.string().email().toLowerCase().min(5, {
       message: "Email should have a minimum length of 5 characters",
     }),
     password: z.string().min(5, {
