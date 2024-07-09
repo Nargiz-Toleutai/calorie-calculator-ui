@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 export interface Product {
   id?: number;
@@ -28,7 +29,13 @@ const ProductItem = ({
   return (
     <Link href={`/edit-product/${id}`} className="justify-end">
       <div className="border rounded-lg p-4 shadow-lg flex flex-col items-center bg-white bg-opacity-80 backdrop-blur font-medium transform transition-transform duration-300 hover:scale-105">
-        <img src={image} alt={name} className="w-32 h-32 object-cover mb-4" />
+        <Image
+          src={image}
+          alt={name}
+          width={128}
+          height={128}
+          className="w-32 h-32 object-cover mb-4"
+        />
         <h2 className="text-lg font-bold mb-2">{name}</h2>
         <p className="text-gray-500 font-bold">
           {protein} {unit} Protein
