@@ -43,6 +43,12 @@ const EditProduct = () => {
   const router = useRouter();
   const id = router.query.id;
 
+  useEffect(() => {
+    if (authError) {
+      router.push("/login");
+    }
+  }, [authError, router]);
+
   const {
     register,
     handleSubmit,

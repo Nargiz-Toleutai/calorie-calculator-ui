@@ -65,6 +65,12 @@ const EditRecipe = () => {
   const router = useRouter();
   const { id } = router.query;
 
+  useEffect(() => {
+    if (authError) {
+      router.push("/login");
+    }
+  }, [authError, router]);
+
   const {
     register,
     handleSubmit,

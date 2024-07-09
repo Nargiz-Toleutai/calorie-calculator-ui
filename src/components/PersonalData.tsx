@@ -115,10 +115,7 @@ const PersonalData: React.FC = () => {
 
   useEffect(() => {
     if (authError) {
-      const timer = setTimeout(() => {
-        router.push("/login");
-      }, 3000);
-      return () => clearTimeout(timer);
+      router.push("/login");
     }
   }, [authError, router]);
 

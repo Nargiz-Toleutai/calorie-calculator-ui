@@ -3,12 +3,14 @@ import ProductItem, { Product } from "./ProductItem";
 import Layout from "../Layout";
 import { SERVER_DOMAIN } from "./../../utils";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [authError, setAuthError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -17,6 +19,12 @@ export const ProductList = () => {
       setAuthError("You are not authorized. Redirecting to login...");
     }
   }, []);
+
+  useEffect(() => {
+    if (authError) {
+      router.push("/login");
+    }
+  }, [authError, router]);
 
   useEffect(() => {
     if (!token) return;

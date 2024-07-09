@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import RecipeItem, { RecipeProps } from "./RecipeItem";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const RecipeList: React.FC = () => {
   const [recipes, setRecipes] = useState<RecipeProps | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [token, setToken] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -15,6 +17,12 @@ const RecipeList: React.FC = () => {
       setAuthError("You are not authorized. Redirecting to login...");
     }
   }, []);
+
+  useEffect(() => {
+    if (authError) {
+      router.push("/login");
+    }
+  }, [authError, router]);
 
   useEffect(() => {
     if (!token) return;

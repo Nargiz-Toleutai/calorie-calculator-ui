@@ -68,6 +68,12 @@ const AddNewProduct = () => {
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
   const router = useRouter();
 
+  useEffect(() => {
+    if (authError) {
+      router.push("/login");
+    }
+  }, [authError, router]);
+
   const {
     register,
     handleSubmit,

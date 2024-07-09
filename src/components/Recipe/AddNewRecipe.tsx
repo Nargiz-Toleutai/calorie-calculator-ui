@@ -61,6 +61,12 @@ const AddNewRecipe = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const router = useRouter();
 
+  useEffect(() => {
+    if (authError) {
+      router.push("/login");
+    }
+  }, [authError, router]);
+
   const {
     register,
     handleSubmit,
