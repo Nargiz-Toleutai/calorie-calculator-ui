@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BookOpenText, ChefHat, Soup } from "lucide-react";
+import { BookOpenText, ChefHat, Layout, Soup } from "lucide-react";
 import Link from "next/link";
 import AppQRCode from "@/components/AppQRCode";
 import FlipText from "./magicui/flip-text";
@@ -90,8 +90,8 @@ const HomePageInfoPanel = () => {
             <AppQRCode url={appUrl} />
           </div>
         </div>
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 };

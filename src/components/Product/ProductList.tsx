@@ -67,7 +67,7 @@ export const ProductList = () => {
   );
 
   return (
-    <div className="pt-30 p-6 bg-cover bg-no-repeat bg-center min-h-screen">
+    <div className="xl:container xl:mx-auto pt-30 p-6 bg-cover bg-no-repeat bg-center min-h-screen">
       <div className="flex justify-between items-center w-full">
         <input
           type="text"

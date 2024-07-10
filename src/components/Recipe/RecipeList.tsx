@@ -80,7 +80,7 @@ const RecipeList: React.FC = () => {
   );
 
   return (
-    <main className="flex-1 pt-24 px-4 py-6 h-full">
+    <main className=" xl:container xl:mx-auto flex-1 pt-24 px-4 py-6 h-full">
       <div className="flex justify-between items-center w-full">
         <input
           type="text"

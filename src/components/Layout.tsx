@@ -11,7 +11,7 @@ interface LayoutProps {
 const Layout = ({ children, imgUrl }: LayoutProps) => {
   return (
     <div
-      className="min-h-screen bg-fixed"
+      className="min-h-screen bg-fixed bg-cover"
       style={{
         backgroundImage: imgUrl ? `url("${imgUrl}")` : undefined,
       }}
@@ -24,3 +24,4 @@ const Layout = ({ children, imgUrl }: LayoutProps) => {
 };
 
 export default Layout;
+// <main className="xl:container xl:mx-auto">{children}</main>
