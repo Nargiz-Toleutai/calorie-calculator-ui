@@ -5,7 +5,7 @@ import { Github, Mail, Send } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bottom-0 ">
+    <footer className="bottom-0 mt-auto">
       <div className="flex h-20 w-full flex-col items-center justify-center  overflow-hidden rounded-lg bg-background ">
         <Dock>
           <FlipText

@@ -17,7 +17,7 @@ const Layout = ({ children, imgUrl }: LayoutProps) => {
       }}
     >
       <Navigation />
-      <main className="xl:container xl:mx-auto">{children}</main>
+      <main className=" xl:mx-auto">{children}</main>
       <Toaster />
     </div>
   );
