@@ -49,10 +49,11 @@ const ProductValidator = z
     portion: z.preprocess(() => 0, z.number().min(0).default(0)),
     image: z
       .any()
-      .refine(
-        (files) => !files?.length || files[0]?.size <= MAX_FILE_SIZE,
-        `Max image size is 5MB.`
-      )
+      .optional()
+      .refine((files) => {
+        console.log({ files });
+        return !files?.length || files[0]?.size <= MAX_FILE_SIZE;
+      }, `Max image size is 5MB.`)
       .refine(
         (files) =>
           !files?.length || ACCEPTED_IMAGE_MIME_TYPES.includes(files[0]?.type),
@@ -127,7 +128,8 @@ const EditProduct = () => {
 
         const data = await response.json();
         setProduct(data);
-        reset(data);
+
+        reset({ ...data, image: undefined });
         setPreview(`${process.env.NEXT_PUBLIC_API_URL}${data.image}`);
       } catch (error) {
         console.error("Failed to fetch product data", error);
@@ -171,7 +173,6 @@ const EditProduct = () => {
   };
 
   const onSubmitForm = async (data: Product) => {
-    if (typeof image === "undefined") return;
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("unit", data.unit);
@@ -181,7 +182,7 @@ const EditProduct = () => {
     formData.append("fat", parseFloat(data.fat.toString()).toString());
     formData.append("calories", data.calories.toString());
     formData.append("portion", data.portion.toString());
-    formData.append("image", image);
+    if (image !== undefined) formData.append("image", image);
 
     try {
       const response = await fetch(
