@@ -77,6 +77,11 @@ const Navigation = () => {
         <div className="md:hidden">
           <MenuToggle isOpen={isMenuOpen} toggleMenu={toggleMenu} />
         </div>
+        {/* <ul
+          className={`flex gap-4 ${
+            isMenuOpen ? "flex flex-col items-center bg-white" : "hidden"
+          } md:flex md:flex-row md:gap-4`}
+        > */}
         <ul
           className={`flex gap-4 ${
             isMenuOpen ? "flex flex-col items-center bg-white" : "hidden"
@@ -102,6 +107,13 @@ const Navigation = () => {
           )}
         </ul>
       </nav>
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50"
+          style={{ zIndex: -1 }}
+          onClick={toggleMenu}
+        ></div>
+      )}
     </div>
   );
 };

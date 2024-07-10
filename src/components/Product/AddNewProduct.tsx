@@ -441,7 +441,7 @@ const AddNewProduct = () => {
           </div>
           {preview && (
             <div className="mt-4">
-              <Image
+              <img
                 src={preview as string}
                 alt="Image Preview"
                 className="w-full h-auto rounded-md"

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast, { Toaster } from "react-hot-toast";
 import DataSelector from "./DataSelector";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
 import Link from "next/link";
 import GaugeCircle from "./magicui/gauge-circle";
 import {
@@ -178,8 +179,9 @@ const PersonalData: React.FC = () => {
   }
 
   const ageOptions = Array.from({ length: 121 }, (_, i) => i + 18);
-  const heightOptions = Array.from({ length: 200 }, (_, i) => i + 50);
-  const weightOptions = Array.from({ length: 101 }, (_, i) => i + 40);
+  const heightOptions = Array.from({ length: 151 }, (_, i) => i + 100); // Диапазон роста от 100 до 250
+  const weightOptions = Array.from({ length: 161 }, (_, i) => i + 40); // Диапазон веса от 40 до 200
+
   const genderOptions = [
     { label: "Female", value: "female" },
     { label: "Male", value: "male" },
@@ -328,20 +330,36 @@ const PersonalData: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 m-0.5">
-                Height
+                Height (cm)
               </label>
               <Controller
                 name="height"
                 control={control}
-                defaultValue={data.height ?? 50}
+                defaultValue={data.height ?? 100}
                 render={({ field }) => (
-                  <DataSelector
-                    name="Height (cm)"
-                    value={field.value}
-                    options={heightOptions}
-                    onChange={(event: SelectChangeEvent<number>) =>
-                      field.onChange(event.target.value)
-                    }
+                  <TextField
+                    {...field}
+                    type="number"
+                    inputProps={{ min: 100, max: 250 }}
+                    fullWidth
+                    variant="outlined"
+                    error={!!errors.height}
+                    helperText={errors.height?.message}
+                    sx={{
+                      backgroundColor: "white",
+                      borderRadius: "6px",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "white",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "white",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "green",
+                        },
+                      },
+                    }}
                   />
                 )}
               />
@@ -349,20 +367,36 @@ const PersonalData: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mt-1">
-                Weight
+                Weight (kg)
               </label>
               <Controller
                 name="weight"
                 control={control}
                 defaultValue={data.weight ?? 40}
                 render={({ field }) => (
-                  <DataSelector
-                    name="Weight (kg)"
-                    value={field.value}
-                    options={weightOptions}
-                    onChange={(event: SelectChangeEvent<number>) =>
-                      field.onChange(event.target.value)
-                    }
+                  <TextField
+                    {...field}
+                    type="number"
+                    inputProps={{ min: 40, max: 200 }}
+                    fullWidth
+                    variant="outlined"
+                    error={!!errors.weight}
+                    helperText={errors.weight?.message}
+                    sx={{
+                      backgroundColor: "white",
+                      borderRadius: "6px",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "white",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "white",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "green",
+                        },
+                      },
+                    }}
                   />
                 )}
               />

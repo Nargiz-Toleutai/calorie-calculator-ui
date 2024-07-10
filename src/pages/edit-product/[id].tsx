@@ -126,10 +126,8 @@ const EditProduct = () => {
         }
 
         const data = await response.json();
-        console.log({ data });
         setProduct(data);
         reset(data);
-
         setPreview(`${process.env.NEXT_PUBLIC_API_URL}${data.image}`);
       } catch (error) {
         console.error("Failed to fetch product data", error);
@@ -493,7 +491,8 @@ const EditProduct = () => {
             </div>
             {preview && (
               <div className="mt-4">
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={preview as string}
                   alt="Image Preview"
                   className="w-full h-auto rounded-md"

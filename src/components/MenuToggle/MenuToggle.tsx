@@ -104,7 +104,7 @@ const MenuToggle = ({
 
       <aside
         ref={menuRef}
-        className={`fixed -top-5 -right-10 z-40 w-64 h-screen transition-transform ${
+        className={`fixed -top-5 -right-10 z-50 w-64 h-screen transition-transform ${
           isOpen ? "translate-x-0" : "translate-x-200"
         } sm:translate-x-0`}
         aria-label="Sidebar"
