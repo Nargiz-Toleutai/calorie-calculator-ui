@@ -1,13 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, ChangeEvent } from "react";
 import { useForm, FieldError, Controller } from "react-hook-form";
-import Image from "next/image";
 import { z } from "zod";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { TextField, Button } from "@mui/material";
-import DataSelector from "../DataSelector";
 import RadioButtonsGroup from "../RadioButtonsGroup";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
@@ -47,12 +45,15 @@ const ProductValidator = z
     portion: z.preprocess(() => 0, z.number().min(0).default(0)),
     file: z
       .any()
+      .optional()
       .refine(
-        (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+        (files) => !files?.length || files?.[0]?.size <= MAX_FILE_SIZE,
         `Max image size is 5MB.`
       )
       .refine(
-        (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
+        (files) =>
+          !files?.length ||
+          ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
         "Only .jpg, .jpeg, .png and .webp formats are supported."
       ),
   })
@@ -119,15 +120,16 @@ const AddNewProduct = () => {
   }, [protein, carbs, fat, setValue]);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log({ e, files: e.target.files });
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setFile(file);
+      const imageFile = e.target.files[0];
+      setFile(imageFile);
 
       const reader = new FileReader();
       reader.onload = function () {
         setPreview(reader.result);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(imageFile);
     }
   };
 
@@ -416,7 +418,7 @@ const AddNewProduct = () => {
           <input id="portion" type="hidden" {...register("portion")} />
 
           <div>
-            <label htmlFor="image" className="block text-gray-700">
+            <label htmlFor="file" className="block text-gray-700">
               <span className="sr-only">Choose file</span>
               <input
                 id="file"
@@ -441,6 +443,7 @@ const AddNewProduct = () => {
           </div>
           {preview && (
             <div className="mt-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={preview as string}
                 alt="Image Preview"

@@ -50,10 +50,10 @@ const ProductValidator = z
     image: z
       .any()
       .optional()
-      .refine((files) => {
-        console.log({ files });
-        return !files?.length || files[0]?.size <= MAX_FILE_SIZE;
-      }, `Max image size is 5MB.`)
+      .refine(
+        (files) => !files?.length || files[0]?.size <= MAX_FILE_SIZE,
+        `Max image size is 5MB.`
+      )
       .refine(
         (files) =>
           !files?.length || ACCEPTED_IMAGE_MIME_TYPES.includes(files[0]?.type),
@@ -98,6 +98,8 @@ const EditProduct = () => {
       quantity: 100,
     },
   });
+
+  console.log({ errors });
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
