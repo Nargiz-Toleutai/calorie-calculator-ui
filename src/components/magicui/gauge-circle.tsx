@@ -102,7 +102,7 @@ export default function GaugeCircle({
         data-current-value={currentPercent}
         className="duration-[var(--transition-length)] delay-[var(--delay)] absolute inset-0 m-auto h-fit w-fit ease-linear animate-in fade-in"
       >
-        {Math.floor(currentPercent)}
+        {currentPercent.toFixed(1)} %
       </span>
     </div>
   );

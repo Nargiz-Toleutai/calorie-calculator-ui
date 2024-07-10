@@ -268,6 +268,12 @@ const PersonalData: React.FC = () => {
     },
   ];
 
+  const proteinPercent = ((pfc.protein * 4) / pfc.calories) * 100;
+  const carbsPercent = ((pfc.carbs * 4) / pfc.calories) * 100;
+  const fatPercent = ((pfc.fat * 9) / pfc.calories) * 100;
+
+  console.log({ proteinPercent, carbsPercent, fatPercent });
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-center bg-contain bg-no-repeat">
       <div className="max-w-4xl w-full mt-32 mb-32 p-8 bg-white bg-opacity-80 backdrop-blur rounded-lg shadow-md">
@@ -473,8 +479,8 @@ const PersonalData: React.FC = () => {
                 </span>
                 <GaugeCircle
                   name="Carbs"
-                  max={400}
-                  value={pfc.carbs}
+                  max={100}
+                  value={carbsPercent}
                   min={0}
                   gaugePrimaryColor="red"
                   gaugeSecondaryColor="white"
@@ -487,8 +493,8 @@ const PersonalData: React.FC = () => {
                 </span>
                 <GaugeCircle
                   name="Protein"
-                  max={200}
-                  value={pfc.protein}
+                  max={100}
+                  value={proteinPercent}
                   min={0}
                   gaugePrimaryColor="green"
                   gaugeSecondaryColor="white"
@@ -502,7 +508,7 @@ const PersonalData: React.FC = () => {
                 <GaugeCircle
                   name="Fat"
                   max={100}
-                  value={pfc.fat}
+                  value={fatPercent}
                   min={0}
                   gaugePrimaryColor="yellow"
                   gaugeSecondaryColor="white"

@@ -126,8 +126,10 @@ const EditProduct = () => {
         }
 
         const data = await response.json();
+        console.log({ data });
         setProduct(data);
         reset(data);
+
         setPreview(`${process.env.NEXT_PUBLIC_API_URL}${data.image}`);
       } catch (error) {
         console.error("Failed to fetch product data", error);
