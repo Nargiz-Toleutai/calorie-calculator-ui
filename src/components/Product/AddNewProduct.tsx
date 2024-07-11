@@ -47,7 +47,7 @@ const ProductValidator = z
       .any()
       .optional()
       .refine((files) => {
-        console.log({ files });
+        console.log({ f: files.length, files });
         return !files?.length || files?.[0]?.size <= MAX_FILE_SIZE;
       }, `Max image size is 5MB.`)
       .refine(
@@ -95,6 +95,8 @@ const AddNewProduct = () => {
     },
   });
 
+  console.log({ errors });
+
   const protein = watch("protein");
   const carbs = watch("carbs");
   const fat = watch("fat");
@@ -120,7 +122,7 @@ const AddNewProduct = () => {
   }, [protein, carbs, fat, setValue]);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log({ e, files: e.target.files });
+    // console.log({ e, files: e.target.files });
     if (e.target.files && e.target.files[0]) {
       const imageFile = e.target.files[0];
       setFile(imageFile);
@@ -324,6 +326,7 @@ const AddNewProduct = () => {
               type="number"
               inputProps={{ step: 0.01 }}
               {...register("carbs")}
+              onChange={handleInputChange}
               fullWidth
               variant="outlined"
               error={!!errors.carbs}

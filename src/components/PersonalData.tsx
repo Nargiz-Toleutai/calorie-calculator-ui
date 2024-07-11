@@ -179,8 +179,8 @@ const PersonalData: React.FC = () => {
   }
 
   const ageOptions = Array.from({ length: 121 }, (_, i) => i + 18);
-  const heightOptions = Array.from({ length: 151 }, (_, i) => i + 100); // Диапазон роста от 100 до 250
-  const weightOptions = Array.from({ length: 161 }, (_, i) => i + 40); // Диапазон веса от 40 до 200
+  const heightOptions = Array.from({ length: 151 }, (_, i) => i + 100);
+  const weightOptions = Array.from({ length: 161 }, (_, i) => i + 40);
 
   const genderOptions = [
     { label: "Female", value: "female" },
