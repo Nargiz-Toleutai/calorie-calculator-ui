@@ -4,8 +4,7 @@ import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast, { Toaster } from "react-hot-toast";
-import DataSelector from "./DataSelector";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+
 import TextField from "@mui/material/TextField";
 import Link from "next/link";
 import GaugeCircle from "./magicui/gauge-circle";
@@ -19,7 +18,6 @@ import {
 } from "../components/ui/select";
 import { calulateCalories, calulatePFCForGoal } from "@/calculation/calories";
 import RadioButtonsGroup from "./RadioButtonsGroup";
-import NumberTicker from "./magicui/number-ticker";
 
 const AdditionalUserDataValidator = z
   .object({

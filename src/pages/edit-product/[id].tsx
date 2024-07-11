@@ -1,13 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, ChangeEvent, useRef } from "react";
 import { useForm, FieldError, Controller } from "react-hook-form";
-import Image from "next/image";
 import { z } from "zod";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { TextField, Button } from "@mui/material";
-import DataSelector from "./../../components/DataSelector";
+import { TextField } from "@mui/material";
 import RadioButtonsGroup from "./../../components/RadioButtonsGroup";
 import Layout from "@/components/Layout";
 

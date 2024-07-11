@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from "react";
+import { useState } from "react";
 import { Product } from "./Product/ProductItem";
 import ProductItem from "./Product/ProductItem";
 
