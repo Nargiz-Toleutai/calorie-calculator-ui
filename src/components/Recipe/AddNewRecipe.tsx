@@ -12,14 +12,6 @@ import { Form, FormControl, FormField } from "../ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Check, ChevronDown } from "lucide-react";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
-import {
   SelectPr,
   SelectGroup,
   SelectValue,
@@ -32,6 +24,14 @@ import {
   SelectScrollDownButton,
 } from "../ui/select";
 import { cn } from "@/utils";
+import {
+  Command,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+} from "../ui/command";
 
 export interface Product {
   id: number;

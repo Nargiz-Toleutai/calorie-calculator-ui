@@ -433,7 +433,7 @@ const PersonalData: React.FC = () => {
                     onValueChange={(value) => field.onChange(Number(value))}
                     value={field.value.toString()}
                   >
-                    <SelectTrigger className="w-[280px] bg-white h-14 hover:border-red-600">
+                    <SelectTrigger className="w-full bg-white h-14 hover:border-red-600">
                       <SelectValue placeholder="Select your activity level" />
                     </SelectTrigger>
                     <SelectContent>
@@ -472,7 +472,7 @@ const PersonalData: React.FC = () => {
                     onValueChange={(value) => field.onChange(Number(value))}
                     value={field.value.toString()}
                   >
-                    <SelectTrigger className="w-[280px] bg-white h-14">
+                    <SelectTrigger className="w-full bg-white h-14">
                       <SelectValue placeholder="Select your deficit percent" />
                     </SelectTrigger>
                     <SelectContent>

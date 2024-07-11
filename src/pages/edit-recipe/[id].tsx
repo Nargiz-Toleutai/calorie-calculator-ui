@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { green } from "@mui/material/colors";
@@ -75,6 +75,7 @@ const EditRecipe = () => {
   const [searchField, setSearchField] = useState("");
   const [token, setToken] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [categoryId, setCategoryId] = useState<Category["id"]>(1);
 
   const router = useRouter();
   const { id } = router.query;
@@ -115,7 +116,7 @@ const EditRecipe = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!token) return;
+      if (!token || !id) return;
       try {
         const responseCategories = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/categories`,
@@ -162,12 +163,12 @@ const EditRecipe = () => {
         setCategories(resCategories);
         setProducts(resProducts);
         setSelectedProducts(resRecipe.products);
+        setCategoryId(resRecipe.categoryId);
         reset({
           name: resRecipe.name,
           categoryId: resRecipe.categoryId,
           products: resRecipe.products,
         });
-        setValue("categoryId", resRecipe.categoryId);
       } catch (error) {
         console.error("Failed to fetch data", error);
         setAuthError("Something went wrong. Please try again later.");
@@ -175,9 +176,7 @@ const EditRecipe = () => {
     };
 
     fetchData();
-  }, [token, reset, setValue, id]);
-
-  console.log({ categories });
+  }, [token, reset, id]);
 
   const onSubmitForm = async (data: Recipe) => {
     try {
@@ -298,6 +297,7 @@ const EditRecipe = () => {
                   render={({ field }) => (
                     <SelectPr
                       {...field}
+                      defaultValue={categoryId.toString()}
                       onValueChange={(value) => field.onChange(Number(value))}
                       value={field.value.toString()}
                     >
