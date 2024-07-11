@@ -53,9 +53,13 @@ const Login = () => {
       }
 
       const result = await response.json();
-      localStorage.setItem("token", result.token);
-      console.log("Logged in");
-      router.push("/");
+
+      if (result.token) {
+        localStorage.setItem("token", result.token);
+        router.push("/");
+      } else {
+        throw new Error("No token received");
+      }
     } catch (error) {
       console.error("Something went wrong!", error);
       setError(

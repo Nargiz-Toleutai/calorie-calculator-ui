@@ -19,7 +19,7 @@ type RegisterFormData = z.infer<typeof UserDataValidator>;
 
 const Register = () => {
   const router = useRouter();
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -43,8 +43,9 @@ const Register = () => {
       );
 
       const responseData = await response.json();
-      localStorage.setItem("token", responseData.token);
+
       if (response.status === 201) {
+        localStorage.setItem("token", responseData.token);
         router.push("/");
       } else if (response.status === 409) {
         setError("User already exists. Redirecting to login page...");
