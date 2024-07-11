@@ -85,7 +85,7 @@ const MenuToggle = ({
   ];
 
   return (
-    <>
+    <div>
       <button
         onClick={toggleMenu}
         type="button"
@@ -94,13 +94,6 @@ const MenuToggle = ({
         <span className="sr-only">Open sidebar</span>
         <AlignJustify color="#22c55d" />
       </button>
-
-      {/* <div
-        className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity z-30 ${
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-        onClick={toggleMenu}
-      ></div> */}
 
       <aside
         ref={menuRef}
@@ -140,7 +133,7 @@ const MenuToggle = ({
           </ul>
         </div>
       </aside>
-    </>
+    </div>
   );
 };
 

@@ -293,13 +293,29 @@ const PersonalData: React.FC = () => {
                 control={control}
                 defaultValue={data.age ?? 18}
                 render={({ field }) => (
-                  <DataSelector
-                    name="Age"
-                    value={field.value}
-                    options={ageOptions}
-                    onChange={(event: SelectChangeEvent<number>) =>
-                      field.onChange(event.target.value)
-                    }
+                  <TextField
+                    {...field}
+                    type="age"
+                    inputProps={{ min: 18, max: 80 }}
+                    fullWidth
+                    variant="outlined"
+                    error={!!errors.age}
+                    helperText={errors.age?.message}
+                    sx={{
+                      backgroundColor: "white",
+                      borderRadius: "6px",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "white",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "white",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "green",
+                        },
+                      },
+                    }}
                   />
                 )}
               />

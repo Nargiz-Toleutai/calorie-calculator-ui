@@ -46,10 +46,10 @@ const ProductValidator = z
     file: z
       .any()
       .optional()
-      .refine(
-        (files) => !files?.length || files?.[0]?.size <= MAX_FILE_SIZE,
-        `Max image size is 5MB.`
-      )
+      .refine((files) => {
+        console.log({ files });
+        return !files?.length || files?.[0]?.size <= MAX_FILE_SIZE;
+      }, `Max image size is 5MB.`)
       .refine(
         (files) =>
           !files?.length ||
