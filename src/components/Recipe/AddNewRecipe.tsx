@@ -3,29 +3,53 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { green } from "@mui/material/colors";
-
-import { Product } from "../Product/ProductItem";
 import toast from "react-hot-toast";
-import {
-  MenuItem,
-  TextField,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  Autocomplete,
-} from "@mui/material";
+import { MenuItem, TextField, Button, Chip, Box } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { Form, FormControl, FormField } from "../ui/form";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Check, ChevronDown } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
+import {
+  SelectPr,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
+} from "../ui/select";
+import { cn } from "@/utils";
+
+export interface Product {
+  id: number;
+  name: string;
+  unit?: number;
+  quantity?: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  calories: number;
+  image: string;
+}
 
 interface Category {
   id: number;
   name: string;
   icon: string;
 }
-
-import { useRouter } from "next/router";
-import Link from "next/link";
 
 const RecipeValidator = z
   .object({
@@ -39,7 +63,7 @@ const RecipeValidator = z
           productId: z.number().int(),
         })
       )
-      .nonempty({ message: "At least one product must be selected" }),
+      .min(1, { message: "At least one product must be selected" }),
   })
   .strict();
 
@@ -56,9 +80,9 @@ const AddNewRecipe = () => {
   const [selectedProducts, setSelectedProducts] = useState<
     { productId: number }[]
   >([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [searchField, setSearchField] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -67,14 +91,7 @@ const AddNewRecipe = () => {
     }
   }, [authError, router]);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    reset,
-    control,
-    formState: { errors },
-  } = useForm<Recipe>({
+  const form = useForm<Recipe>({
     resolver: zodResolver(RecipeValidator),
     defaultValues: {
       name: "",
@@ -83,6 +100,17 @@ const AddNewRecipe = () => {
     },
   });
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    reset,
+    control,
+    trigger,
+    formState: { errors },
+  } = form;
+
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     setToken(storedToken);
@@ -90,18 +118,15 @@ const AddNewRecipe = () => {
       setAuthError("You are not authorized. Redirecting to login...");
       return;
     }
-  }, []);
 
-  useEffect(() => {
     const fetchData = async () => {
-      if (!token) return;
       try {
         const responseCategories = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/categories`,
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${storedToken}`,
             },
           }
         );
@@ -111,7 +136,7 @@ const AddNewRecipe = () => {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${storedToken}`,
             },
           }
         );
@@ -132,13 +157,7 @@ const AddNewRecipe = () => {
     };
 
     fetchData();
-  }, [token]);
-
-  useEffect(() => {
-    if (selectedProducts.length > 0 && selectedProducts[0]) {
-      setValue("products", [selectedProducts[0], ...selectedProducts.slice(1)]);
-    }
-  }, [products, selectedProducts, setValue]);
+  }, []);
 
   const onSubmitForm = async (data: Recipe) => {
     try {
@@ -160,6 +179,7 @@ const AddNewRecipe = () => {
 
       const responseData = await response.json();
       setRecipes([...recipes, responseData]);
+
       router.push("/meals");
       reset();
     } catch (error) {
@@ -172,14 +192,20 @@ const AddNewRecipe = () => {
       productId &&
       !selectedProducts.find((product) => product.productId === productId)
     ) {
-      setSelectedProducts([...selectedProducts, { productId }]);
+      const updatedProducts = [...selectedProducts, { productId }];
+      setSelectedProducts(updatedProducts);
+      setValue("products", updatedProducts, { shouldValidate: true });
+      trigger("products");
     }
   };
 
   const handleRemoveProduct = (productId: number) => {
-    setSelectedProducts(
-      selectedProducts.filter((product) => product.productId !== productId)
+    const updatedProducts = selectedProducts.filter(
+      (product) => product.productId !== productId
     );
+    setSelectedProducts(updatedProducts);
+    setValue("products", updatedProducts, { shouldValidate: true });
+    trigger("products");
   };
 
   return (
@@ -187,182 +213,187 @@ const AddNewRecipe = () => {
       <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8 max-w-md w-full">
         <h1 className="text-2xl font-bold mb-6">Add New Recipe</h1>
         {authError && <p className="text-red-500">{authError}</p>}
-        <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
-          <div>
-            <label htmlFor="name" className="block text-gray-700">
-              Recipe Name
-            </label>
-            <TextField
-              id="name"
-              type="text"
-              {...register("name")}
-              fullWidth
-              variant="outlined"
-              error={!!errors.name}
-              helperText={errors.name?.message}
-              sx={{
-                backgroundColor: "white",
-                borderColor: "white",
-                borderRadius: "6px",
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "white",
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
+            <div>
+              <label htmlFor="name" className="block text-gray-700">
+                Recipe Name
+              </label>
+              <TextField
+                id="name"
+                type="text"
+                {...register("name")}
+                fullWidth
+                variant="outlined"
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                sx={{
+                  backgroundColor: "white",
+                  borderColor: "white",
+                  borderRadius: "6px",
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "white",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "white",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "green",
+                    },
                   },
-                  "&:hover fieldset": {
-                    borderColor: "white",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "green",
-                  },
-                },
-              }}
-            />
-          </div>
+                }}
+              />
+            </div>
 
-          <div>
-            <label htmlFor="categoryId" className="block text-gray-700">
-              Category
-            </label>
-            <TextField
-              select
-              id="categoryId"
-              placeholder="Search for a category"
-              {...register("categoryId", { valueAsNumber: true })}
-              fullWidth
-              variant="outlined"
-              error={!!errors.categoryId}
-              helperText={errors.categoryId?.message}
-              sx={{
-                backgroundColor: "white",
-                borderColor: "white",
-                borderRadius: "6px",
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "white",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "white",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "green",
-                  },
-                },
-              }}
-            >
-              {categories.map((category) => (
-                <MenuItem
-                  key={category.id}
-                  value={category.id}
-                  sx={{
-                    backgroundColor: "transparent",
-                    border: "none",
-                    borderRadius: "1px",
-                  }}
-                >
-                  {category.name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </div>
-
-          <div>
-            <label htmlFor="products" className="block text-gray-700">
-              Products
-            </label>
-            <div className="mt-1">
+            <div>
+              <label htmlFor="categoryId" className="block text-gray-700">
+                Category
+              </label>
               <Controller
-                name="products"
+                name="categoryId"
                 control={control}
-                render={() => (
-                  <Autocomplete
-                    value={selectedProduct}
-                    onChange={(event, newValue) => {
-                      setSelectedProduct(newValue);
-                      if (newValue && newValue.id !== undefined) {
-                        handleAddProduct(newValue.id);
-                      }
-                    }}
-                    options={products}
-                    getOptionLabel={(option) => option.name}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        placeholder="Search for a product"
-                        error={!!errors.products}
-                        helperText={errors.products?.message}
-                        sx={{
-                          backgroundColor: "white",
-                          borderColor: "white",
-                          borderRadius: "6px",
-                          "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
-                              borderColor: "white",
-                            },
-                            "&:hover fieldset": {
-                              borderColor: "white",
-                            },
-                            "&.Mui-focused fieldset": {
-                              borderColor: "green",
-                            },
-                          },
-                        }}
-                      />
-                    )}
-                    noOptionsText="No product found"
-                  />
+                render={({ field }) => (
+                  <SelectPr
+                    {...field}
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    value={field.value.toString()}
+                  >
+                    <SelectTrigger className="w-full h-14 text-green-800 uppercase">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      {categories.map(({ name, id }) => (
+                        <SelectGroup key={id}>
+                          <SelectItem value={id.toString()}>
+                            <div className="text-gray-700 ml-2">{name}</div>
+                          </SelectItem>
+                        </SelectGroup>
+                      ))}
+                    </SelectContent>
+                  </SelectPr>
                 )}
               />
-
-              <List className="mt-2">
-                {selectedProducts.map((product) => (
-                  <ListItem
-                    key={product.productId}
-                    className="flex items-center justify-between bg-gray-100 p-2 rounded-md mt-5"
-                  >
-                    <ListItemText
-                      primary={
-                        products.find((p) => p.id === product.productId)?.name
-                      }
-                      className="pl-2"
-                    />
-                    <IconButton
-                      edge="end"
-                      onClick={() => handleRemoveProduct(product.productId)}
-                      className="mr-1"
-                    >
-                      <DeleteIcon color="error" />
-                    </IconButton>
-                  </ListItem>
-                ))}
-              </List>
+              {errors.categoryId && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.categoryId?.message}
+                </p>
+              )}
             </div>
-          </div>
 
-          <div className="flex justify-end">
-            <Button
-              onClick={notify}
-              type="submit"
-              variant="contained"
-              color="secondary"
-              sx={{
-                backgroundColor: green[500],
-                "&:hover": {
-                  backgroundColor: green[800],
-                },
-              }}
-            >
-              Save Recipe
-            </Button>
-          </div>
-          <div className="flex justify-between items-center mb-6">
-            <Link href="/meals">
-              <span className="inline-block align-baseline font-medium text-sm text-green-600 hover:text-green-800">
-                Go back to Recipes
-              </span>
-            </Link>
-          </div>
-        </form>
+            <div>
+              <label htmlFor="products" className="block text-gray-700">
+                Ingredients
+              </label>
+              <FormField
+                control={control}
+                name="products"
+                render={({ field }) => (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outlined"
+                          role="combobox"
+                          className={cn(
+                            "justify-between bg-white border-none text-green-700 w-full h-14  hover:bg-white hover:border-none",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          Select Ingredients
+                          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandList>
+                          <CommandInput
+                            placeholder="Search ingredient..."
+                            value={searchField}
+                            onValueChange={setSearchField}
+                          />
+                          <CommandEmpty>No ingredient found.</CommandEmpty>
+                          <CommandGroup>
+                            {products.map((product) => (
+                              <CommandItem
+                                data-disabled="false"
+                                value={product.name}
+                                key={product.id}
+                                onSelect={() => handleAddProduct(product.id)}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    getValues("products")?.find(
+                                      (pId) => pId.productId === product.id
+                                    )
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {product.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                )}
+              />
+              <Box display="flex" flexWrap="wrap" gap={1} mt={2}>
+                {getValues("products")?.map(({ productId }) => {
+                  const product = products.find((p) => p.id === productId);
+                  return (
+                    <Chip
+                      key={productId}
+                      label={product?.name}
+                      onDelete={() => handleRemoveProduct(productId)}
+                      sx={{
+                        backgroundColor: "white",
+                        borderColor: "green",
+                        borderRadius: "4px",
+                        "& .MuiChip-deleteIcon": {
+                          color: "red",
+                        },
+                      }}
+                    />
+                  );
+                })}
+                {errors.products && (
+                  <span className="text-red-600">
+                    {errors.products?.message}
+                  </span>
+                )}
+              </Box>
+            </div>
+
+            <div className="flex justify-end">
+              <Button
+                onClick={notify}
+                type="submit"
+                variant="contained"
+                color="secondary"
+                sx={{
+                  backgroundColor: green[500],
+                  "&:hover": {
+                    backgroundColor: green[800],
+                  },
+                }}
+              >
+                Save Recipe
+              </Button>
+            </div>
+            <div className="flex justify-between items-center mb-6">
+              <Link href="/meals">
+                <span className="inline-block align-baseline font-medium text-sm text-green-600 hover:text-green-800">
+                  Go back to Recipes
+                </span>
+              </Link>
+            </div>
+          </form>
+        </Form>
       </div>
     </div>
   );

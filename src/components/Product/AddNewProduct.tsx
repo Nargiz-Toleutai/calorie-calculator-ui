@@ -122,7 +122,6 @@ const AddNewProduct = () => {
   }, [protein, carbs, fat, setValue]);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    // console.log({ e, files: e.target.files });
     if (e.target.files && e.target.files[0]) {
       const imageFile = e.target.files[0];
       setFile(imageFile);

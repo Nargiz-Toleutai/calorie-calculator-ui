@@ -91,16 +91,17 @@ const RecipeList: React.FC = () => {
       </div>
 
       <div className="flex justify-between items-center ">
-        <Link
-          href="/account"
-          className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700 cursor-pointer"
-        >
-          Change goal: {recipes.total.calories} Kcal
+        <Link href="/account">
+          <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
+            Change goal: {recipes.total.calories} Kcal
+          </button>
         </Link>
         {Object.keys(recipes.recipesByCategory).length > 0 && (
-          <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
-            <Link href={"/add-new-recipe"}>Add new Recipe</Link>
-          </button>
+          <Link href={"/add-new-recipe"}>
+            <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
+              Add new Recipe{" "}
+            </button>
+          </Link>
         )}
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-full mt-8">
@@ -140,9 +141,11 @@ const RecipeList: React.FC = () => {
             You don&apos;t have any recipes
           </p>
           <p>Do you want to add some?</p>
-          <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
-            <Link href="/add-new-recipe">Add new Recipe</Link>
-          </button>
+          <Link href="/add-new-recipe">
+            <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
+              Add new Recipe
+            </button>
+          </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-6">

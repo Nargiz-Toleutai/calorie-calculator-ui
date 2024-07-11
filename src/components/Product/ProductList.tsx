@@ -76,9 +76,11 @@ export const ProductList = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-      <button className="bg-green-500 flex justify-between items-center  text-white font-bold py-2 px-4 mt-5 mb-5 rounded-md hover:bg-green-700">
-        <Link href={"/add-new-product"}>Add new product</Link>
-      </button>
+      <Link href={"/add-new-product"}>
+        <button className="bg-green-500 flex justify-between items-center  text-white font-bold py-2 px-4 mt-5 mb-5 rounded-md hover:bg-green-700">
+          Add new product
+        </button>
+      </Link>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProducts.map((product) => (

@@ -16,9 +16,10 @@ import {
   SelectPr,
   SelectTrigger,
   SelectValue,
-} from "./Select";
+} from "../components/ui/select";
 import { calulateCalories, calulatePFCForGoal } from "@/calculation/calories";
 import RadioButtonsGroup from "./RadioButtonsGroup";
+import NumberTicker from "./magicui/number-ticker";
 
 const AdditionalUserDataValidator = z
   .object({
@@ -565,10 +566,11 @@ const PersonalData: React.FC = () => {
                 />
               </div>
             </div>
-
-            <button className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-              <Link href="/meals">View Recipes</Link>
-            </button>
+            <Link href="/meals">
+              <button className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                View Recipes
+              </button>
+            </Link>
           </>
         )}
       </div>

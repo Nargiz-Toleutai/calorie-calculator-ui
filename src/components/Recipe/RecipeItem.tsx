@@ -99,11 +99,11 @@ const RecipeItem: React.FC<RecipeProps> = ({ recipesByCategory, total }) => {
                       )} text-xs  uppercase bg-gray-50 bg-opacity-80 backdrop-blur`}
                     >
                       <tr>
-                        <th className="px-3 py-3">Products</th>
-                        <th className="px-3 py-3">Protein</th>
-                        <th className="px-3 py-3">Carbs</th>
-                        <th className="px-3 py-3">Fat</th>
-                        <th className="px-3 py-3">Portion(g)</th>
+                        <th className="px-2 py-2">Products</th>
+                        <th className="px-2 py-2">Protein</th>
+                        <th className="px-2 py-2">Carbs</th>
+                        <th className="px-2 py-2">Fat</th>
+                        <th className="px-2 py-2">Portion(g)</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -119,10 +119,10 @@ const RecipeItem: React.FC<RecipeProps> = ({ recipesByCategory, total }) => {
                               {product.name}
                             </Link>
                           </td>
-                          <td className="px-3 py-3">{product.protein}</td>
-                          <td className="px-3 py-3">{product.carbs}</td>
-                          <td className="px-3 py-3">{product.fat}</td>
-                          <td className="px-4 py-3">
+                          <td className="px-2 py-2">{product.protein}</td>
+                          <td className="px-2 py-2">{product.carbs}</td>
+                          <td className="px-2 py-2">{product.fat}</td>
+                          <td className="px-3 py-2">
                             {Math.floor(product.portion)}
                           </td>
                         </tr>
