@@ -17,11 +17,7 @@ import {
   SelectValue,
   SelectTrigger,
   SelectContent,
-  SelectLabel,
   SelectItem,
-  SelectSeparator,
-  SelectScrollUpButton,
-  SelectScrollDownButton,
 } from "../ui/select";
 import { cn } from "@/utils";
 import {
@@ -292,17 +288,15 @@ const AddNewRecipe = () => {
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
-                        <Button
-                          variant="outlined"
-                          role="combobox"
+                        <button
                           className={cn(
-                            "justify-between bg-white border-none text-green-700 w-full h-14  hover:bg-white hover:border-none",
+                            "flex flex-row items-center justify-between uppercase bg-white border-none text-green-700 w-full h-14 px-3 py-2 hover:bg-white hover:border-none",
                             !field.value && "text-muted-foreground"
                           )}
                         >
-                          Select Ingredients
+                          <span>Select Ingredients</span>
                           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
+                        </button>
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-[200px] p-0">
