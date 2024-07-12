@@ -90,7 +90,7 @@ const RecipeList: React.FC = () => {
         />
       </div>
 
-      <div className="flex justify-between items-center ">
+      <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0 md:space-x-4">
         <Link href="/account">
           <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700 md:py-2 md:px-4 sm:py-1 sm:px-2 sm:text-sm">
             Change goal: {recipes.total.calories} Kcal
