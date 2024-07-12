@@ -92,18 +92,19 @@ const RecipeList: React.FC = () => {
 
       <div className="flex justify-between items-center ">
         <Link href="/account">
-          <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
+          <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700 md:py-2 md:px-4 sm:py-1 sm:px-2">
             Change goal: {recipes.total.calories} Kcal
           </button>
         </Link>
         {Object.keys(recipes.recipesByCategory).length > 0 && (
           <Link href={"/add-new-recipe"}>
-            <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700">
-              Add new Recipe{" "}
+            <button className="bg-green-500 text-white font-bold py-2 px-4 my-4 rounded-md hover:bg-green-700 md:py-2 md:px-4 sm:py-1 sm:px-2">
+              Add new Recipe
             </button>
           </Link>
         )}
       </div>
+
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-full mt-8">
         <table className="w-full text-sm text-left text-green-600">
           <caption className="bg-opacity-80  bg-green-50 backdrop-blur p-4 uppercase font-semibold text-centre rtl:text-right text-green-900">
