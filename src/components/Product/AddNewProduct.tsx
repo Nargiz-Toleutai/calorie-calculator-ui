@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState, ChangeEvent, useMemo } from "react";
 import { useForm, FieldError, Controller } from "react-hook-form";
 import { z } from "zod";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { TextField, Button } from "@mui/material";
+import { TextField } from "@mui/material";
 import RadioButtonsGroup from "../RadioButtonsGroup";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
@@ -95,11 +95,20 @@ const AddNewProduct = () => {
     },
   });
 
-  console.log({ errors });
-
   const protein = watch("protein");
   const carbs = watch("carbs");
   const fat = watch("fat");
+
+  const calories = useMemo(() => {
+    if (protein && carbs && fat) {
+      return Math.floor(protein * 4 + carbs * 4 + fat * 9);
+    }
+    return 0;
+  }, [carbs, fat, protein]);
+
+  useEffect(() => {
+    setValue("calories", calories);
+  }, [calories, setValue]);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -109,17 +118,6 @@ const AddNewProduct = () => {
       router.push("/login");
     }
   }, [router]);
-
-  useEffect(() => {
-    const calculateCalories = () => {
-      const calories = Math.floor(protein * 4 + carbs * 4 + fat * 9);
-      setValue("calories", calories);
-    };
-
-    if (protein && carbs && fat) {
-      calculateCalories();
-    }
-  }, [protein, carbs, fat, setValue]);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

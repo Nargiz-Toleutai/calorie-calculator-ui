@@ -9,22 +9,22 @@ const getActivityLevelFactor = (activityLevel: number): number => {
     }[activityLevel] ?? 1.9
   );
 
-  return [1.2, 1.375, 1.55, 1.725, 1.9][activityLevel + 1] ?? 1.9;
+  // second option = return [1.2, 1.375, 1.55, 1.725, 1.9][activityLevel + 1] ?? 1.9;
 
-  switch (activityLevel) {
-    case 1:
-      return 1.2;
-    case 2:
-      return 1.375;
-    case 3:
-      return 1.55;
-    case 4:
-      return 1.725;
-    case 5:
-      return 1.9;
-    default:
-      return 1.9;
-  }
+  // third option = switch (activityLevel) {
+  //   case 1:
+  //     return 1.2;
+  //   case 2:
+  //     return 1.375;
+  //   case 3:
+  //     return 1.55;
+  //   case 4:
+  //     return 1.725;
+  //   case 5:
+  //     return 1.9;
+  //   default:
+  //     return 1.9;
+  // }
 };
 
 export const calulateCalories = (

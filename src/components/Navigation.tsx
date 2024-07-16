@@ -66,11 +66,12 @@ const Navigation = () => {
     <div className="fixed top-5 w-full z-50 px-4">
       <nav className="text-white bg-white shadow-sm bg-opacity-80 backdrop-blur rounded-bl-lg rounded-tr-lg xl:container xl:mx-auto h-16 flex items-center justify-between px-4 md:px-auto">
         <Link href={"/"}>
-          <Image
+          {/*eslint-disable-next-line @next/next/no-img-element*/}
+          <img
             src={"/fitFuelLogo.png"}
             alt={"FitFuel Logo"}
-            width={100}
-            height={140}
+            width="auto"
+            height="auto"
             className="h-12 mr-4"
           />
         </Link>

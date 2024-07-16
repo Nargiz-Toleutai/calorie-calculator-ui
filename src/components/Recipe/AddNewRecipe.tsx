@@ -19,7 +19,7 @@ import {
   SelectContent,
   SelectItem,
 } from "../ui/select";
-import { cn } from "@/utils";
+import { cn } from "../../lib/utils";
 import {
   Command,
   CommandInput,

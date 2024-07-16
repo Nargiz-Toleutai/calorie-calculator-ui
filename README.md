@@ -1,40 +1,64 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# FitFuel [Calorie Calculator]
+
+## Overview
+
+FitFuel is a web application that helps users track and manage their daily calorie intake. Users can add, edit, and delete recipes and products, and the application calculates the portion sizes based on the required calorie intake to help users lose weight. The project also includes user authentication features such as login and registration.
+
+## Features
+
+- **Calorie Tracking**: Track the calorie intake of the added products and recipes.
+- **Recipe Management**: Add, edit, and delete recipes.
+- **Product Management**: Add, edit, and delete individual products.
+- **User Authentication**: Secure login and registration functionality.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
+Make sure you have the following installed:
+
+- Node.js
+- npm (Node Package Manager)
+
+### Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/yourusername/calorie-calculator-ui.git
+   ```
+2. Navigate to the project directory:
+   ```sh
+   cd calorie-calculator-ui
+   ```
+3. Install the dependencies:
+   ```sh
+   npm install
+   ```
+
+### Running the Application
+
+To start the development server, run:
+
+```sh
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Project Structure
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```sh
+fitfuel/
+├── public/          # Static assets
+├── src/             # Source files
+│   ├── components/  # React components
+│   ├── pages/       # Next.js pages
+│   ├── styles/      # CSS and style files
+│   ├── utils/       # Utility functions
+│   └── hooks/       # Custom hooks
+├── .eslintrc.js     # ESLint configuration
+├── next.config.js   # Next.js configuration
+├── package.json     # NPM dependencies and scripts
+└── tailwind.config.js # Tailwind CSS configuration
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```

@@ -28,6 +28,7 @@ const ProductItem = ({
     <Link href={`/edit-product/${id}`} className="justify-end">
       <div className="border rounded-lg p-4 shadow-lg flex items-center bg-white bg-opacity-80 backdrop-blur font-medium transform transition-transform duration-300 hover:scale-105 relative group">
         <div className="relative">
+          {/*eslint-disable-next-line @next/next/no-img-element*/}
           <img
             src={image}
             alt={name}
