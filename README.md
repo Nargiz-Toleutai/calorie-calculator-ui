@@ -4,6 +4,10 @@
 
 FitFuel is a web application that helps users track and manage their daily calorie intake. Users can add, edit, and delete recipes and products, and the application calculates the portion sizes based on the required calorie intake to help users lose weight. The project also includes user authentication features such as login and registration.
 
+## Production
+
+The production version of this project is available at: [FitFuel Calorie Calculator](https://fitfuel-calorie-calculator.vercel.app)
+
 ## Features
 
 - **Calorie Tracking**: Track the calorie intake of the added products and recipes.
