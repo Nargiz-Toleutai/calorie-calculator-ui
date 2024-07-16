@@ -32,7 +32,7 @@ import {
   SelectContent,
   SelectItem,
 } from "../../components/ui/select";
-import { cn } from "@/utils";
+import { cn } from "../../lib/utils";
 
 interface Category {
   id: number;
