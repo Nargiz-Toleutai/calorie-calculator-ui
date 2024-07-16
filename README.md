@@ -54,8 +54,7 @@ fitfuel/
 │   ├── components/  # React components
 │   ├── pages/       # Next.js pages
 │   ├── styles/      # CSS and style files
-│   ├── utils/       # Utility functions
-│   └── hooks/       # Custom hooks
+│   └── utils/       # Utility functions
 ├── .eslintrc.js     # ESLint configuration
 ├── next.config.js   # Next.js configuration
 ├── package.json     # NPM dependencies and scripts
