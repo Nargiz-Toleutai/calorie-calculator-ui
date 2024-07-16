@@ -61,3 +61,40 @@ fitfuel/
 └── tailwind.config.js # Tailwind CSS configuration
 
 ```
+
+## Dependencies
+
+This project uses the following main dependencies:
+
+- `@emotion/react` & `@emotion/styled`: For styling components.
+- `@headlessui/react`: For accessible UI components.
+- `@hookform/resolvers` & `react-hook-form`: For form validation and handling.
+- `@mui/material` & `@mui/icons-material`: Material UI for React components.
+- `@radix-ui/react-*`: For building accessible and reusable components.
+- `classnames` & `clsx`: Utility for conditionally joining class names.
+- `cmdk`: Command menu component.
+- `framer-motion`: For animations.
+- `lucide-react`: Icon library.
+- `next`: React framework for server-side rendering.
+- `qrcode.react`: QR code component for React.
+- `react` & `react-dom`: Core React libraries.
+- `react-beautiful-dnd`: Drag and drop functionality.
+- `react-hot-toast`: Toast notifications.
+- `react-select`: Select component.
+- `tailwindcss`: Utility-first CSS framework.
+- `zod`: Schema declaration and validation library.
+
+## Dev Dependencies
+
+- `@types/*`: TypeScript type definitions.
+- `eslint` & `eslint-config-next`: For linting JavaScript and TypeScript.
+- `postcss`: For transforming styles with JavaScript plugins.
+- `typescript`: For static type checking.
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request for any bugs, feature requests, or improvements.
+
+## Acknowledgements
+
+Thanks to the developers of all the open-source packages used in this project.
