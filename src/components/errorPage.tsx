@@ -1,12 +1,11 @@
-import Layout from "@/components/Layout";
 import Link from "next/link";
 
-interface Error404PageProps {
+interface ErrorPageProps {
   error: string | null;
   page: string;
 }
 
-const Error404Page = ({ error, page }: Error404PageProps) => {
+const ErrorPage = ({ error, page }: ErrorPageProps) => {
   return (
     <>
       <h1 className="text-2xl font-bold mb-6 text-red-500 flex justify-center">
@@ -22,4 +21,4 @@ const Error404Page = ({ error, page }: Error404PageProps) => {
   );
 };
 
-export default Error404Page;
+export default ErrorPage;
