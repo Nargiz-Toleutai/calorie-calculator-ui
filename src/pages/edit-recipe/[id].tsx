@@ -44,6 +44,22 @@ interface SelectedProduct {
   productId: number;
 }
 
+// const RecipeValidator = z
+//   .object({
+//     name: z
+//       .string()
+//       .min(2, { message: "Name should be a minimum of 2 characters" }),
+//     categoryId: z.number().int(),
+//     products: z
+//       .array(
+//         z.object({
+//           productId: z.number().int(),
+//         })
+//       )
+//       .optional(),
+//   })
+//   .strict();
+
 const RecipeValidator = z
   .object({
     name: z
@@ -56,7 +72,7 @@ const RecipeValidator = z
           productId: z.number().int(),
         })
       )
-      .optional(),
+      .min(1, { message: "At least one product must be selected" }),
   })
   .strict();
 
@@ -261,56 +277,59 @@ const EditRecipeForm = ({
           <FormField
             control={control}
             name="products"
-            render={({ field }) => (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <button
-                      className={cn(
-                        "flex flex-row items-center justify-between uppercase bg-white border-none text-green-700 w-full h-14 px-3 py-2 hover:bg-white hover:border-none",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      <span>Select Ingredients</span>
-                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Command>
-                    <CommandList>
-                      <CommandInput
-                        placeholder="Search ingredient..."
-                        value={searchField}
-                        onValueChange={setSearchField}
-                      />
-                      <CommandEmpty>No ingredient found.</CommandEmpty>
-                      <CommandGroup>
-                        {products.map((product) => (
-                          <CommandItem
-                            data-disabled="false"
-                            value={product.name}
-                            key={product.id}
-                            onSelect={() => handleAddProduct(product.id)}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                getValues("products")?.find(
-                                  (pId) => pId.productId === product.id
-                                )
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {product.name}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
+            render={({ field, fieldState: { error } }) => (
+              <>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <button
+                        className={cn(
+                          "flex flex-row items-center justify-between uppercase bg-white border-none text-green-700 w-full h-14 px-3 py-2 hover:bg-white hover:border-none",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        <span>Select Ingredients</span>
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandList>
+                        <CommandInput
+                          placeholder="Search ingredient..."
+                          value={searchField}
+                          onValueChange={setSearchField}
+                        />
+                        <CommandEmpty>No ingredient found.</CommandEmpty>
+                        <CommandGroup>
+                          {products.map((product) => (
+                            <CommandItem
+                              data-disabled="false"
+                              value={product.name}
+                              key={product.id}
+                              onSelect={() => handleAddProduct(product.id)}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  getValues("products")?.find(
+                                    (pId) => pId.productId === product.id
+                                  )
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {product.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                {error && <p className="text-red-500">{error.message}</p>}
+              </>
             )}
           />
           <Box display="flex" flexWrap="wrap" gap={1} mt={2}>
