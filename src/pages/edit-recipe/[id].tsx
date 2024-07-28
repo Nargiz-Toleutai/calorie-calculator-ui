@@ -20,7 +20,7 @@ const EditRecipe = () => {
   const [categoryId, setCategoryId] = useState<Category["id"]>(1);
   const [token, setToken] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
   const { id } = router.query;
@@ -94,17 +94,17 @@ const EditRecipe = () => {
       } catch (error) {
         console.error("Failed to fetch data", error);
         setAuthError("Recipe not found");
-        // } finally {
-        //   setLoading(false);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [token, id]);
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Layout imgUrl="/background-images/login-page-background.jpg">
