@@ -48,7 +48,7 @@ const ProductValidator = z
     portion: z.preprocess(() => 0, z.number().min(0).default(0)),
     image: z
       .any()
-      .optional()
+
       .refine(
         (files) => !files?.length || files[0]?.size <= MAX_FILE_SIZE,
         `Max image size is 5MB.`
@@ -73,6 +73,7 @@ const EditProduct = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [image, setImage] = useState<File | undefined>();
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+
   const router = useRouter();
   const { id } = router.query;
 
@@ -468,8 +469,8 @@ const EditProduct = () => {
             <input id="portion" type="hidden" {...register("portion")} />
 
             <div>
-              <label htmlFor="image" className="block text-gray-700">
-                <span className="sr-only">Choose file</span>
+              <label htmlFor="image" className="block text-red-700">
+                <span className="sr-only">Change image</span>
                 <input
                   id="image"
                   type="file"
@@ -484,7 +485,6 @@ const EditProduct = () => {
                           "
                 />
               </label>
-
               {errors.image && (
                 <p className="text-red-500">
                   {(errors.image as FieldError).message}
