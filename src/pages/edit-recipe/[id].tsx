@@ -44,22 +44,6 @@ interface SelectedProduct {
   productId: number;
 }
 
-// const RecipeValidator = z
-//   .object({
-//     name: z
-//       .string()
-//       .min(2, { message: "Name should be a minimum of 2 characters" }),
-//     categoryId: z.number().int(),
-//     products: z
-//       .array(
-//         z.object({
-//           productId: z.number().int(),
-//         })
-//       )
-//       .optional(),
-//   })
-//   .strict();
-
 const RecipeValidator = z
   .object({
     name: z

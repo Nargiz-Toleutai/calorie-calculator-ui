@@ -5,9 +5,10 @@ import { z } from "zod";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import RadioButtonsGroup from "./../../components/RadioButtonsGroup";
 import Layout from "@/components/Layout";
+import { green } from "@mui/material/colors";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -511,19 +512,34 @@ const EditProduct = () => {
             )}
 
             <div className="flex justify-between">
-              <button
-                onClick={handleDelete}
+              <Button
                 type="button"
-                className="hover:text-red-500 text-slate-600 text-sm py-2 px-4 underline-offset-1"
+                variant="contained"
+                color="secondary"
+                onClick={handleDelete}
+                sx={{
+                  backgroundColor: "red",
+                  "&:hover": {
+                    backgroundColor: "darkred",
+                  },
+                }}
               >
-                Delete Product
-              </button>
-              <button
+                Delete Recipe
+              </Button>
+
+              <Button
                 type="submit"
-                className="bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700"
+                variant="contained"
+                color="secondary"
+                sx={{
+                  backgroundColor: green[500],
+                  "&:hover": {
+                    backgroundColor: green[800],
+                  },
+                }}
               >
                 Update Product
-              </button>
+              </Button>
             </div>
             <div className="flex justify-between items-center mb-6">
               <Link href="/products">
