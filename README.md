@@ -2,6 +2,8 @@
 
 ## Overview
 
+<img align="centre" alt="img" src="https://github.com/Nargiz-Toleutai/calorie-calculator-ui/blob/main/public/image.png" width="360px"/>
+
 FitFuel is a web application that helps users track and manage their daily calorie intake. Users can add, edit, and delete recipes and products, and the application calculates the portion sizes based on the required calorie intake to help users lose weight. The project also includes user authentication features such as login and registration.
 
 ## Production
