@@ -1,7 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 import Navigation from "./Navigation";
 import { Toaster } from "react-hot-toast";
+import BurgerMenu from "./BurgerMenu/BurgerMenu";
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,6 +10,18 @@ interface LayoutProps {
 }
 
 const Layout = ({ children, imgUrl }: LayoutProps) => {
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 873);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div
       className="min-h-screen bg-fixed bg-cover"
@@ -16,7 +29,7 @@ const Layout = ({ children, imgUrl }: LayoutProps) => {
         backgroundImage: imgUrl ? `url("${imgUrl}")` : undefined,
       }}
     >
-      <Navigation />
+      {isMobile ? <BurgerMenu /> : <Navigation />}
       <main className=" xl:mx-auto">{children}</main>
       <Toaster />
     </div>
@@ -24,4 +37,3 @@ const Layout = ({ children, imgUrl }: LayoutProps) => {
 };
 
 export default Layout;
-// <main className="xl:container xl:mx-auto">{children}</main>

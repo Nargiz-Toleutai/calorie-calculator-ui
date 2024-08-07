@@ -86,6 +86,9 @@ const config = {
         "150": "150%",
         "200": "200%",
       },
+      zIndex: {
+        "99": "99",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

@@ -1,20 +1,22 @@
-// export const getUserIdFromToken = (token: string) => {
-//   const base64Url = token.split(".")[1];
-//   const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-//   const jsonPayload = decodeURIComponent(
-//     atob(base64)
-//       .split("")
-//       .map((c) => {
-//         return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-//       })
-//       .join("")
-//   );
-
-//   return JSON.parse(jsonPayload).userId;
-// };
-
-// export function cn(...classes: (string | false | null | undefined)[]): string {
-//   return classes.filter(Boolean).join(" ");
-// }
+import { useEffect, useRef } from "react";
 
 export const SERVER_DOMAIN = `${process.env.NEXT_PUBLIC_API_URL}`;
+
+export const useDimensions = (ref: React.RefObject<HTMLElement>) => {
+  const dimensions = useRef({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const measure = () => {
+      if (ref.current) {
+        dimensions.current.width = ref.current.offsetWidth;
+        dimensions.current.height = ref.current.offsetHeight;
+      }
+    };
+
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [ref]);
+
+  return dimensions.current;
+};

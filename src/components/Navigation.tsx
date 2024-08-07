@@ -1,8 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import MenuToggle from "./MenuToggle/MenuToggle";
 
 const NavigationButton = ({
   href,
@@ -75,9 +73,7 @@ const Navigation = () => {
             className="h-12 mr-4"
           />
         </Link>
-        <div className="md:hidden">
-          <MenuToggle isOpen={isMenuOpen} toggleMenu={toggleMenu} />
-        </div>
+        <div className="md:hidden"></div>
         <ul
           className={`flex gap-4 ${
             isMenuOpen ? "flex flex-col items-center bg-white" : "hidden"
@@ -103,13 +99,6 @@ const Navigation = () => {
           )}
         </ul>
       </nav>
-      {isMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50"
-          style={{ zIndex: -1 }}
-          onClick={toggleMenu}
-        ></div>
-      )}
     </div>
   );
 };
