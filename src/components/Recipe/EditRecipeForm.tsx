@@ -32,6 +32,7 @@ import {
   SelectItem,
 } from "../../components/ui/select";
 import { cn } from "../../lib/utils";
+import BackLink from "../BackLink/BackLink";
 
 export interface Category {
   id: number;
@@ -368,13 +369,7 @@ const EditRecipeForm = ({
             Update Recipe
           </Button>
         </div>
-        <div className="flex justify-between items-center mb-6">
-          <Link href="/meals">
-            <span className="inline-block align-baseline font-medium text-sm text-green-600 hover:text-green-800">
-              Go back to Recipes
-            </span>
-          </Link>
-        </div>
+        <BackLink link={"/meals"} text={" Go back to Recipes"} />
       </form>
     </Form>
   );
