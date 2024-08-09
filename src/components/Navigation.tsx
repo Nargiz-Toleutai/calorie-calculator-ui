@@ -16,15 +16,12 @@ const NavigationButton = ({
 
 const Navigation = () => {
   const [token, setToken] = useState<string | null>(null);
-  const [isMenuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const tokenFromStorage = localStorage.getItem("token");
     setToken(tokenFromStorage);
   }, []);
-
-  const toggleMenu = () => setMenuOpen(!isMenuOpen);
 
   const handleLogout = () => {
     setToken(null);
@@ -74,11 +71,7 @@ const Navigation = () => {
           />
         </Link>
         <div className="md:hidden"></div>
-        <ul
-          className={`flex gap-4 ${
-            isMenuOpen ? "flex flex-col items-center bg-white" : "hidden"
-          } md:flex md:flex-row md:gap-4`}
-        >
+        <ul className="flex gap-4 md:flex md:flex-row md:gap-4">
           {menuItems.map(
             ({ href, label, condition }) =>
               condition && (

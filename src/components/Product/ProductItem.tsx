@@ -32,13 +32,13 @@ const ProductItem = ({
           <p className="text-green-500 font-bold">
             {protein} {unit} Protein
           </p>
-          <p className="text-red-500">
+          <p className="text-red-500 font-bold">
             {carbs} {unit} Carbs
           </p>
-          <p className="text-yellow-500">
+          <p className="text-yellow-500 font-bold">
             {fat} {unit} Fat
           </p>
-          <p className="text-gray-500">{calories} Kcal</p>
+          <p className="text-gray-500 font-bold">{calories} Kcal</p>
         </div>
       </div>
     </Link>
