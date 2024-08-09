@@ -1,18 +1,5 @@
 import Link from "next/link";
-
-export interface Product {
-  id?: number;
-  name: string;
-  unit?: number;
-  quantity?: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  calories: number;
-  image: string;
-}
-
-type ProductItemProps = Product & { onClick?: () => void };
+import { Product } from "./types";
 
 const ProductItem = ({
   id,

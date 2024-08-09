@@ -524,7 +524,7 @@ const EditProduct = () => {
                   },
                 }}
               >
-                Delete Recipe
+                Delete Product
               </Button>
 
               <Button
