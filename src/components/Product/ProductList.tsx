@@ -4,7 +4,7 @@ import Layout from "../Layout";
 import { SERVER_DOMAIN } from "./../../utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Product } from "./types";
+import { Product } from "./../../models/product";
 
 export const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([]);

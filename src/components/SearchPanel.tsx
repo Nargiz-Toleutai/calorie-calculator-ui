@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Product } from "./Product/ProductItem";
+import { Product } from "./../models/product";
 import ProductItem from "./Product/ProductItem";
 
 interface SearchPanelProps {

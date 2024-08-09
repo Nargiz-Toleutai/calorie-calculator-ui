@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Product } from "./types";
+import { Product } from "./../../models/product";
 
 const ProductItem = ({
   id,
