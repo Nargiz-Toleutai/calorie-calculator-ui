@@ -77,7 +77,6 @@ const CalorieCalculator = () => {
         }
 
         const res = await responseUserData.json();
-        console.log("Fetched data:", res);
         setData(res);
       } catch (error) {
         console.error("Failed to fetch data", error);

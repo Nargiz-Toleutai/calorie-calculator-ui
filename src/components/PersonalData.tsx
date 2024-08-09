@@ -134,7 +134,6 @@ const PersonalData: React.FC = () => {
       const result = await response.json();
       setData(result);
       notify();
-      console.log("Information updated");
 
       const {
         weight,
@@ -272,8 +271,6 @@ const PersonalData: React.FC = () => {
   const proteinPercent = ((pfc.protein * 4) / pfc.calories) * 100;
   const carbsPercent = ((pfc.carbs * 4) / pfc.calories) * 100;
   const fatPercent = ((pfc.fat * 9) / pfc.calories) * 100;
-
-  console.log({ proteinPercent, carbsPercent, fatPercent });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-center bg-contain bg-no-repeat">

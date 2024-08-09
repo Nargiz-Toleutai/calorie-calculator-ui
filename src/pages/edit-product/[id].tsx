@@ -99,8 +99,6 @@ const EditProduct = () => {
     },
   });
 
-  console.log({ errors });
-
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     setToken(storedToken);
@@ -237,8 +235,6 @@ const EditProduct = () => {
     { label: "grams", value: "g" },
     { label: "liters", value: "l" },
   ];
-
-  console.log({ errors });
 
   return (
     <Layout imgUrl="/background-images/register-page-background.jpg">

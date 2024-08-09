@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import ProductItem, { Product } from "./ProductItem";
+import ProductItem from "./ProductItem";
 import Layout from "../Layout";
 import { SERVER_DOMAIN } from "./../../utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Product } from "./types";
 
 export const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -51,8 +52,6 @@ export const ProductList = () => {
 
     getProducts();
   }, [token]);
-
-  console.log({ products });
 
   if (authError) {
     return (

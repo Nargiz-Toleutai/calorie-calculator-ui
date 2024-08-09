@@ -44,8 +44,6 @@ const RecipeList: React.FC = () => {
 
         const recipes = await recipesData.json();
 
-        console.log("Fetched recipes data:", recipes);
-
         setRecipes(recipes);
       } catch (error) {
         console.error("Failed to fetch data", error);
