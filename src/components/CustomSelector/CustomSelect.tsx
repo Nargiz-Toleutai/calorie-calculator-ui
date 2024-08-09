@@ -6,8 +6,8 @@ import {
   SelectTrigger,
   SelectContent,
   SelectItem,
-} from "./ui/select";
-import { CustomSelectProps } from "./Recipe/types";
+} from "../ui/select";
+import { CustomSelectProps } from "./types";
 
 const CustomSelect: React.FC<CustomSelectProps> = ({
   control,

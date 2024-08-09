@@ -3,7 +3,7 @@ import { useEffect, useState, ChangeEvent, useMemo } from "react";
 import { useForm, FieldError, Controller } from "react-hook-form";
 import { notifySuccess } from "../../utils";
 import { useRouter } from "next/router";
-import CustomTextField from "../CustomTextField";
+import CustomTextField from "../CustomTextField/CustomTextField";
 import ImageUploader from "./ImageUploader";
 import FormHeader from "./FormHeader";
 import FormFooter from "./FormFooter";

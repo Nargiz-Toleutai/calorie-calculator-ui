@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
-import { Product } from "../../components/Recipe/AddNewRecipe";
+import { Product } from "../../models/product";
 
 import EditRecipeForm, {
   Category,

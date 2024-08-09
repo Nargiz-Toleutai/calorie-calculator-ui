@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { CustomTextFieldProps } from "../components/Product/types";
+import { CustomTextFieldProps } from "../Product/types";
 
 const CustomTextField = ({
   id,

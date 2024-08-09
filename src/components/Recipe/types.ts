@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Product } from "../../models/product";
 
 export const RecipeValidator = z
   .object({
@@ -18,40 +19,20 @@ export const RecipeValidator = z
 
 export type Recipe = z.infer<typeof RecipeValidator>;
 
-// types.ts
-import {
-  Control,
-  FieldError,
-  UseFormRegisterReturn,
-  UseFormReturn,
-} from "react-hook-form";
-
-export interface CustomTextFieldProps {
-  id: string;
-  label: string;
-  type: string;
-  register: UseFormRegisterReturn;
-  error?: FieldError;
-  helperText?: string;
-  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
-  readOnly?: boolean;
-}
-
-export interface CustomSelectProps {
-  control: Control<any>;
+export interface Category {
+  id: number;
   name: string;
-  label: string;
-  options: { id: number; name: string }[];
-  error?: FieldError;
+  icon: string;
 }
 
-export interface CustomChipProps {
-  label?: string;
-  onDelete: () => void;
+export interface SelectedProduct {
+  productId: number;
 }
 
-export interface FormWrapperProps {
-  form: UseFormReturn<any>;
-  onSubmit: (data: any) => void;
-  children: React.ReactNode;
+export interface ProductSelectorProps {
+  products: Product[];
+  selectedProducts: { productId: number }[];
+  onAddProduct: (productId: number) => void;
+  onRemoveProduct: (productId: number) => void;
+  error?: string;
 }
