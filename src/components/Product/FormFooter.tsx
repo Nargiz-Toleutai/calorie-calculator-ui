@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const FormFooter: React.FC = () => (
+const FormFooter = () => (
   <div>
     <div className="flex justify-end">
       <button

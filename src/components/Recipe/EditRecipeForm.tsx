@@ -7,8 +7,7 @@ import toast from "react-hot-toast";
 import { TextField, Button, Chip, Box } from "@mui/material";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Layout from "@/components/Layout";
-import { Product } from "../../components/Recipe/AddNewRecipe";
+import { Product } from "../../models/product";
 import { Form, FormControl, FormField } from "../../components/ui/form";
 import {
   Popover,
@@ -292,7 +291,9 @@ const EditRecipeForm = ({
                               data-disabled="false"
                               value={product.name}
                               key={product.id}
-                              onSelect={() => handleAddProduct(product.id)}
+                              onSelect={() =>
+                                handleAddProduct(product.id ? product.id : 1)
+                              }
                             >
                               <Check
                                 className={cn(

@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
-import { CustomTextFieldProps } from "./types";
+import { CustomTextFieldProps } from "../components/Product/types";
 
-const CustomTextField: React.FC<CustomTextFieldProps> = ({
+const CustomTextField = ({
   id,
   label,
   type,
@@ -10,7 +10,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
   helperText,
   inputProps,
   readOnly,
-}) => {
+}: CustomTextFieldProps) => {
   return (
     <div>
       <label htmlFor={id} className="block text-gray-700">

@@ -3,12 +3,12 @@ import { useEffect, useState, ChangeEvent, useMemo } from "react";
 import { useForm, FieldError, Controller } from "react-hook-form";
 import { notifySuccess } from "../../utils";
 import { useRouter } from "next/router";
-import CustomTextField from "./CustomTextField";
+import CustomTextField from "../CustomTextField";
 import ImageUploader from "./ImageUploader";
 import FormHeader from "./FormHeader";
 import FormFooter from "./FormFooter";
 import RadioButtonsGroup from "../RadioButtonsGroup";
-import { Product, ProductValidator } from "./validation";
+import { Product, ProductValidator } from "./types";
 
 const AddNewProduct = () => {
   const [product, setProduct] = useState<Product>();

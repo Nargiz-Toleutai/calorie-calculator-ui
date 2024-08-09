@@ -1,24 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { Product } from "../../models/product";
+import { Category } from "../../models/category";
 import { green } from "@mui/material/colors";
 import toast from "react-hot-toast";
-import { TextField, Button, Chip, Box } from "@mui/material";
-
+import { Button, Chip, Box } from "@mui/material";
 import { useRouter } from "next/router";
-import Link from "next/link";
-import { Form, FormControl, FormField } from "../ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Check, ChevronDown } from "lucide-react";
-import {
-  SelectPr,
-  SelectGroup,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-} from "../ui/select";
 import { cn } from "../../lib/utils";
 import {
   Command,
@@ -28,42 +18,12 @@ import {
   CommandEmpty,
   CommandGroup,
 } from "../ui/command";
-
-export interface Product {
-  id: number;
-  name: string;
-  unit?: number;
-  quantity?: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  calories: number;
-  image: string;
-}
-
-interface Category {
-  id: number;
-  name: string;
-  icon: string;
-}
-
-const RecipeValidator = z
-  .object({
-    name: z
-      .string()
-      .min(2, { message: "Name should be a minimum of 2 characters" }),
-    categoryId: z.number().int(),
-    products: z
-      .array(
-        z.object({
-          productId: z.number().int(),
-        })
-      )
-      .min(1, { message: "At least one product must be selected" }),
-  })
-  .strict();
-
-export type Recipe = z.infer<typeof RecipeValidator>;
+import { Recipe, RecipeValidator } from "./types";
+import FormWrapper from "./FormWrapper";
+import CustomSelect from "../CustomSelect";
+import CustomTextField from "../CustomTextField";
+import { FormControl, FormField } from "../ui/form";
+import BackLink from "../BackLink/BackLink";
 
 const notify = () => {
   toast.success("Recipe was added");
@@ -97,8 +57,6 @@ const AddNewRecipe = () => {
   });
 
   const {
-    register,
-    handleSubmit,
     setValue,
     getValues,
     reset,
@@ -209,185 +167,128 @@ const AddNewRecipe = () => {
       <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8 max-w-md w-full">
         <h1 className="text-2xl font-bold mb-6">Add New Recipe</h1>
         {authError && <p className="text-red-500">{authError}</p>}
-        <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
-            <div>
-              <label htmlFor="name" className="block text-gray-700">
-                Recipe Name
-              </label>
-              <TextField
-                id="name"
-                type="text"
-                {...register("name")}
-                fullWidth
-                variant="outlined"
-                error={!!errors.name}
-                helperText={errors.name?.message}
-                sx={{
-                  backgroundColor: "white",
-                  borderColor: "white",
-                  borderRadius: "6px",
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "white",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "white",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "green",
-                    },
-                  },
-                }}
-              />
-            </div>
+        <FormWrapper form={form} onSubmit={onSubmitForm}>
+          <CustomTextField
+            id="name"
+            label="Recipe Name"
+            type="text"
+            register={form.register("name")}
+            error={errors.name}
+            helperText={errors.name?.message}
+          />
 
-            <div>
-              <label htmlFor="categoryId" className="block text-gray-700">
-                Category
-              </label>
-              <Controller
-                name="categoryId"
-                control={control}
-                render={({ field }) => (
-                  <SelectPr
-                    {...field}
-                    onValueChange={(value) => field.onChange(Number(value))}
-                    value={field.value.toString()}
-                  >
-                    <SelectTrigger className="w-full h-14 text-green-800 uppercase">
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white">
-                      {categories.map(({ name, id }) => (
-                        <SelectGroup key={id}>
-                          <SelectItem value={id.toString()}>
-                            <div className="text-gray-700 ml-2">{name}</div>
-                          </SelectItem>
-                        </SelectGroup>
-                      ))}
-                    </SelectContent>
-                  </SelectPr>
-                )}
-              />
-              {errors.categoryId && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.categoryId?.message}
-                </p>
+          <CustomSelect
+            control={form.control}
+            name="categoryId"
+            label="Category"
+            options={categories}
+            error={errors.categoryId}
+          />
+
+          <div>
+            <label htmlFor="products" className="block text-gray-700">
+              Ingredients
+            </label>
+            <FormField
+              control={control}
+              name="products"
+              render={({ field }) => (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <button
+                        className={cn(
+                          "flex flex-row items-center justify-between uppercase bg-white border-none text-green-700 w-full h-14 px-3 py-2 hover:bg-white hover:border-none",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        <span>Select Ingredients</span>
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandList>
+                        <CommandInput
+                          placeholder="Search ingredient..."
+                          value={searchField}
+                          onValueChange={setSearchField}
+                        />
+                        <CommandEmpty>No ingredient found.</CommandEmpty>
+                        <CommandGroup>
+                          {products.map((product) => (
+                            <CommandItem
+                              data-disabled="false"
+                              value={product.name}
+                              key={product.id}
+                              onSelect={() =>
+                                handleAddProduct(product.id ? product.id : 0)
+                              }
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  getValues("products")?.find(
+                                    (pId) => pId.productId === product.id
+                                  )
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {product.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               )}
-            </div>
+            />
+            <Box display="flex" flexWrap="wrap" gap={1} mt={2}>
+              {getValues("products")?.map(({ productId }) => {
+                const product = products.find((p) => p.id === productId);
+                return (
+                  <Chip
+                    key={productId}
+                    label={product?.name}
+                    onDelete={() => handleRemoveProduct(productId)}
+                    sx={{
+                      backgroundColor: "white",
+                      borderColor: "green",
+                      borderRadius: "4px",
+                      "& .MuiChip-deleteIcon": {
+                        color: "red",
+                      },
+                    }}
+                  />
+                );
+              })}
+              {errors.products && (
+                <span className="text-red-600">{errors.products?.message}</span>
+              )}
+            </Box>
+          </div>
 
-            <div>
-              <label htmlFor="products" className="block text-gray-700">
-                Ingredients
-              </label>
-              <FormField
-                control={control}
-                name="products"
-                render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <button
-                          className={cn(
-                            "flex flex-row items-center justify-between uppercase bg-white border-none text-green-700 w-full h-14 px-3 py-2 hover:bg-white hover:border-none",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          <span>Select Ingredients</span>
-                          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0">
-                      <Command>
-                        <CommandList>
-                          <CommandInput
-                            placeholder="Search ingredient..."
-                            value={searchField}
-                            onValueChange={setSearchField}
-                          />
-                          <CommandEmpty>No ingredient found.</CommandEmpty>
-                          <CommandGroup>
-                            {products.map((product) => (
-                              <CommandItem
-                                data-disabled="false"
-                                value={product.name}
-                                key={product.id}
-                                onSelect={() => handleAddProduct(product.id)}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    getValues("products")?.find(
-                                      (pId) => pId.productId === product.id
-                                    )
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                                {product.name}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                )}
-              />
-              <Box display="flex" flexWrap="wrap" gap={1} mt={2}>
-                {getValues("products")?.map(({ productId }) => {
-                  const product = products.find((p) => p.id === productId);
-                  return (
-                    <Chip
-                      key={productId}
-                      label={product?.name}
-                      onDelete={() => handleRemoveProduct(productId)}
-                      sx={{
-                        backgroundColor: "white",
-                        borderColor: "green",
-                        borderRadius: "4px",
-                        "& .MuiChip-deleteIcon": {
-                          color: "red",
-                        },
-                      }}
-                    />
-                  );
-                })}
-                {errors.products && (
-                  <span className="text-red-600">
-                    {errors.products?.message}
-                  </span>
-                )}
-              </Box>
-            </div>
-
-            <div className="flex justify-end">
-              <Button
-                onClick={notify}
-                type="submit"
-                variant="contained"
-                color="secondary"
-                sx={{
-                  backgroundColor: green[500],
-                  "&:hover": {
-                    backgroundColor: green[800],
-                  },
-                }}
-              >
-                Save Recipe
-              </Button>
-            </div>
-            <div className="flex justify-between items-center mb-6">
-              <Link href="/meals">
-                <span className="inline-block align-baseline font-medium text-sm text-green-600 hover:text-green-800">
-                  Go back to Recipes
-                </span>
-              </Link>
-            </div>
-          </form>
-        </Form>
+          <div className="flex justify-end">
+            <Button
+              onClick={notify}
+              type="submit"
+              variant="contained"
+              color="secondary"
+              sx={{
+                backgroundColor: green[500],
+                "&:hover": {
+                  backgroundColor: green[800],
+                },
+              }}
+            >
+              Save Recipe
+            </Button>
+          </div>
+          <BackLink link={"/meals"} text={" Go back to Recipes"} />
+        </FormWrapper>
       </div>
     </div>
   );
