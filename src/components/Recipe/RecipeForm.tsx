@@ -1,22 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
-import { Recipe, RecipeValidator } from "./types";
+import { Recipe, RecipeFormProps, RecipeValidator } from "./types";
 import FormWrapper from "../FormWrapper/FormWrapper";
 import CustomSelect from "../CustomSelector/CustomSelect";
 import CustomTextField from "../CustomTextField/CustomTextField";
 import ProductSelector from "./ProductSelector";
-import { Category } from "../../models/category";
-import { Product } from "../../models/product";
-
-interface RecipeFormProps {
-  initialValues?: Partial<Recipe>;
-  categories: Category[];
-  products: Product[];
-  onSubmit: (data: Recipe) => Promise<void>;
-  buttonText: string;
-  recipeId?: string;
-}
 
 const RecipeForm = ({
   initialValues = { name: "", categoryId: 1, products: [] },

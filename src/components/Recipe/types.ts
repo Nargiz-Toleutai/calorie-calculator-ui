@@ -36,3 +36,12 @@ export interface ProductSelectorProps {
   onRemoveProduct: (productId: number) => void;
   error?: string;
 }
+
+export interface RecipeFormProps {
+  initialValues?: Partial<Recipe>;
+  categories: Category[];
+  products: Product[];
+  onSubmit: (data: Recipe) => Promise<void>;
+  buttonText: string;
+  recipeId?: string;
+}
