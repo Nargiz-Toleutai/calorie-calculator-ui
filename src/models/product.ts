@@ -9,3 +9,8 @@ export interface Product {
   calories: number;
   image: string;
 }
+
+export type ProductWithUnitQuantity = Product & {
+  unit: number;
+  quantity: number;
+};
