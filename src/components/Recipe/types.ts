@@ -53,3 +53,12 @@ export interface SelectedProductsChipsProps {
   products: Product[];
   onRemoveProduct: (productId: number) => void;
 }
+
+export interface EditRecipeFormProps {
+  id: string;
+  recipe: Recipe;
+  products: Product[];
+  categories: Category[];
+  defaultSelectedProducts: SelectedProduct[];
+  defaultCategoryId: number;
+}

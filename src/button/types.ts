@@ -3,8 +3,10 @@ export interface PrimaryActionButtonProps {
   href: string;
 }
 
-export interface SubmitButtonProps {
+export interface DynamicButtonProps {
   title: string;
-  color: string;
-  hoverColor: string;
+  type?: "button" | "submit";
+  color?: string;
+  hoverColor?: string;
+  onClick?: () => void;
 }

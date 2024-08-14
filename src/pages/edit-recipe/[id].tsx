@@ -3,12 +3,9 @@ import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
 import { Product } from "../../models/product";
 
-import EditRecipeForm, {
-  Category,
-  Recipe,
-  SelectedProduct,
-} from "@/components/Recipe/EditRecipeForm";
+import { Category, Recipe, SelectedProduct } from "@/components/Recipe/types";
 import ErrorPage from "../../components/errorPage";
+import EditRecipeForm from "@/components/Recipe/EditRecipeForm";
 
 const EditRecipe = () => {
   const [categories, setCategories] = useState<Category[]>([]);

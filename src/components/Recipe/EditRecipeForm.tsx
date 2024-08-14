@@ -1,62 +1,22 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
-import { Product } from "../../models/product";
 import BackLink from "../BackLink/BackLink";
 import CustomTextField from "../CustomTextField/CustomTextField";
 import CustomSelect from "../CustomSelector/CustomSelect";
 import ProductSelector from "./ProductSelector";
 import SelectedProductsChips from "./SelectProductsChips";
-import SubmitButton from "@/button/SubmitButton";
 import FormWrapper from "../FormWrapper/FormWrapper";
-
-export interface Category {
-  id: number;
-  name: string;
-  icon: string;
-}
-
-export interface SelectedProduct {
-  productId: number;
-}
-
-const RecipeValidator = z
-  .object({
-    name: z
-      .string()
-      .min(2, { message: "Name should be a minimum of 2 characters" }),
-    categoryId: z.number().int(),
-    products: z
-      .array(
-        z.object({
-          productId: z.number().int(),
-        })
-      )
-      .min(1, { message: "At least one product must be selected" }),
-  })
-  .strict();
-
-export type Recipe = z.infer<typeof RecipeValidator>;
-
-const notifyUpdate = () => {
-  toast.success("Recipe was updated");
-};
-
-const notifyDelete = () => {
-  toast.success("Recipe was deleted");
-};
-
-interface EditRecipeFormProps {
-  id: string;
-  recipe: Recipe;
-  products: Product[];
-  categories: Category[];
-  defaultSelectedProducts: SelectedProduct[];
-  defaultCategoryId: number;
-}
+import {
+  EditRecipeFormProps,
+  Recipe,
+  RecipeValidator,
+  SelectedProduct,
+} from "./types";
+import { notify } from "@/utils";
+import DynamicButton from "@/button/DynamicButton";
 
 const EditRecipeForm = ({
   id,
@@ -76,12 +36,10 @@ const EditRecipeForm = ({
   });
 
   const {
-    register,
     handleSubmit,
     setValue,
     getValues,
     reset,
-    control,
     formState: { errors },
   } = form;
 
@@ -112,7 +70,7 @@ const EditRecipeForm = ({
       }
 
       await response.json();
-      notifyUpdate();
+      notify("Recipe was updated");
       router.push("/meals");
       reset();
     } catch (error) {
@@ -157,7 +115,7 @@ const EditRecipeForm = ({
         throw new Error("Failed to delete data");
       }
 
-      notifyDelete();
+      notify("Recipe was deleted");
       router.push("/meals");
     } catch (error) {
       console.error("Something went wrong", error);
@@ -201,12 +159,14 @@ const EditRecipeForm = ({
       </div>
 
       <div className="flex justify-between">
-        <SubmitButton
+        <DynamicButton
           title={"Delete Recipe"}
           color={"red"}
           hoverColor={"darkred"}
+          onClick={handleDelete}
         />
-        <SubmitButton
+        <DynamicButton
+          type="submit"
           title={"Update Recipe"}
           color={"green"}
           hoverColor={"darkgreen"}
