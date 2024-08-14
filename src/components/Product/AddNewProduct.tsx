@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, ChangeEvent, useMemo } from "react";
 import { useForm, FieldError, Controller } from "react-hook-form";
-import { notifySuccess } from "../../utils";
+import { notify } from "../../utils";
 import { useRouter } from "next/router";
 import CustomTextField from "../CustomTextField/CustomTextField";
 import ImageUploader from "./ImageUploader";
@@ -111,7 +111,7 @@ const AddNewProduct = () => {
         throw new Error("Failed to submit data");
       }
 
-      notifySuccess("Product was added");
+      notify("Product was added");
       router.push("/products");
       reset();
     } catch (error) {

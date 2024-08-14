@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Product } from "./../models/product";
+import { ProductWithUnitQuantity } from "./../models/product";
 import ProductItem from "./Product/ProductItem";
 
 interface SearchPanelProps {
-  products: Product[];
+  products: ProductWithUnitQuantity[];
   onSearch: (query: string) => void;
 }
 
