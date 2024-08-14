@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 
-import HomePageInfoPanel from "@/components/HomePageInfoPanel";
+import HomePageInfoPanel from "@/components/HomePage/HomePageInfoPanel";
 
 export default function Home() {
   return (

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { BookOpenText, ChefHat, Layout, Soup } from "lucide-react";
-import Link from "next/link";
+import { BookOpenText, ChefHat, Soup } from "lucide-react";
 import AppQRCode from "@/components/AppQRCode";
-import FlipText from "./magicui/flip-text";
+import FlipText from "./../magicui/flip-text";
 import Footer from "./Footer";
+import { PrimaryActionButton } from "@/button/PrimaryActionButton";
+import FeatureItem from "./FeatureItem";
 
 const HomePageInfoPanel = () => {
   const [token, setToken] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
-  const appUrl = "https://fitfuel-calorie-calculator.vercel.app/"; // Replace with your actual URL
+  const appUrl = "https://fitfuel-calorie-calculator.vercel.app/";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -17,6 +18,7 @@ const HomePageInfoPanel = () => {
       setAuthError("You are not authorized. Redirecting to login...");
     }
   }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-grow flex flex-col">
@@ -40,13 +42,17 @@ const HomePageInfoPanel = () => {
                 Learn to eat healthier with a quick and simple way to count your
                 calories along.
               </p>
-              <button className="mt-4 px-4 sm:px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700 transition-colors">
-                {token ? (
-                  <Link href="/account">Let&apos;s Start Now</Link>
-                ) : (
-                  <Link href="/login">Let&apos;s Start Now</Link>
-                )}
-              </button>
+              {token ? (
+                <PrimaryActionButton
+                  title={"Let's Start Now"}
+                  href={"/account"}
+                />
+              ) : (
+                <PrimaryActionButton
+                  title={"Let's Start Now"}
+                  href={"/login"}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -60,34 +66,23 @@ const HomePageInfoPanel = () => {
               find your personalized nutritious recipes ready to use in one go.
             </p>
             <div className="flex flex-col md:flex-row justify-between items-stretch gap-8 mt-8">
-              <div className="flex-1 text-center p-4 min-h-[200px]">
-                <Soup color="#68bd82" size={64} className="mx-auto" />
-                <h3 className="text-xl uppercase font-semibold mt-4">
-                  Select & add Ingredients
-                </h3>
-                <p className="mt-2">
-                  Type and search for the ingredients of your choice
-                </p>
-              </div>
-              <div className="flex-1 text-center p-4 min-h-[200px]">
-                <ChefHat color="#68bd82" size={64} className="mx-auto" />
-                <h3 className="text-xl uppercase font-semibold mt-4">
-                  Create recipe
-                </h3>
-                <p className="mt-2">
-                  Prepare your own meal with the selected ingredients
-                </p>
-              </div>
-              <div className="flex-1 text-center p-4 min-h-[200px]">
-                <BookOpenText color="#68bd82" size={64} className="mx-auto" />
-                <h3 className="text-xl uppercase font-semibold mt-4">
-                  Get nutrition information
-                </h3>
-                <p className="mt-2">
-                  Get your personalized information ready with properly balanced
-                  nutrition
-                </p>
-              </div>
+              <FeatureItem
+                icon={<Soup color="#68bd82" size={64} className="mx-auto" />}
+                title="Select & add Ingredients"
+                description="Type and search for the ingredients of your choice"
+              />
+              <FeatureItem
+                icon={<ChefHat color="#68bd82" size={64} className="mx-auto" />}
+                title="Create recipe"
+                description="Prepare your own meal with the selected ingredients"
+              />
+              <FeatureItem
+                icon={
+                  <BookOpenText color="#68bd82" size={64} className="mx-auto" />
+                }
+                title="Get nutrition information"
+                description="Get your personalized information ready with properly balanced nutrition"
+              />
             </div>
             <div className="flex-1 text-center p-4 mt-8 md:mt-0 flex-grow-1">
               <AppQRCode url={appUrl} />

@@ -1,6 +1,6 @@
 import React from "react";
 import { Dock, DockIcon } from "@/components/magicui/dock";
-import FlipText from "./magicui/flip-text";
+import FlipText from "./../magicui/flip-text";
 import { Github, Mail, Send } from "lucide-react";
 
 const Footer = () => {
