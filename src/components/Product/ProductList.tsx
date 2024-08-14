@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Product } from "./../../models/product";
 import SearchInput from "../SearchInput/SearchInput";
-import { AddNewButton } from "@/button/AddNewButton";
+import { PrimaryActionButton } from "@/button/PrimaryActionButton";
 
 export const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -70,7 +70,10 @@ export const ProductList = () => {
   return (
     <div className="xl:container xl:mx-auto pt-30 p-6 bg-cover bg-no-repeat bg-center min-h-screen">
       <SearchInput onChange={(e) => setSearchTerm(e.target.value)} />
-      <AddNewButton title={"Add new product"} />
+      <PrimaryActionButton
+        title={"Add new product"}
+        href={"/add-new-product"}
+      />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProducts.map((product) => (
           <ProductItem
