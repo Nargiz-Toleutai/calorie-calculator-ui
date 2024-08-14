@@ -4,12 +4,12 @@ import Layout from "../Layout";
 import { SERVER_DOMAIN } from "./../../utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Product } from "./../../models/product";
+import { ProductWithUnitQuantity } from "./../../models/product";
 import SearchInput from "../SearchInput/SearchInput";
 import { PrimaryActionButton } from "@/button/PrimaryActionButton";
 
 export const ProductList = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithUnitQuantity[]>([]);
   const [authError, setAuthError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -86,6 +86,7 @@ export const ProductList = () => {
             fat={product.fat}
             calories={product.calories}
             unit={product.unit}
+            quantity={100}
           />
         ))}
       </div>

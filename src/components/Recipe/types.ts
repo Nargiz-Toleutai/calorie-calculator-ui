@@ -35,6 +35,8 @@ export interface ProductSelectorProps {
   onAddProduct: (productId: number) => void;
   onRemoveProduct: (productId: number) => void;
   error?: string;
+  searchField?: string;
+  setSearchField?: (product: string) => void;
 }
 
 export interface RecipeFormProps {
@@ -44,4 +46,10 @@ export interface RecipeFormProps {
   onSubmit: (data: Recipe) => Promise<void>;
   buttonText: string;
   recipeId?: string;
+}
+
+export interface SelectedProductsChipsProps {
+  selectedProducts: { productId: number }[];
+  products: Product[];
+  onRemoveProduct: (productId: number) => void;
 }

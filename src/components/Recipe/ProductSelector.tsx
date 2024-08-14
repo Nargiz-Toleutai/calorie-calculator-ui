@@ -18,11 +18,9 @@ const ProductSelector = ({
   products,
   selectedProducts,
   onAddProduct,
-  onRemoveProduct,
-  error,
+  searchField,
+  setSearchField,
 }: ProductSelectorProps) => {
-  const [searchField, setSearchField] = useState("");
-
   return (
     <div>
       <label htmlFor="products" className="block text-gray-700">
@@ -81,27 +79,6 @@ const ProductSelector = ({
           </Popover>
         )}
       />
-      <Box display="flex" flexWrap="wrap" gap={1} mt={2}>
-        {selectedProducts.map(({ productId }) => {
-          const product = products.find((p) => p.id === productId);
-          return (
-            <Chip
-              key={productId}
-              label={product?.name}
-              onDelete={() => onRemoveProduct(productId)}
-              sx={{
-                backgroundColor: "white",
-                borderColor: "green",
-                borderRadius: "4px",
-                "& .MuiChip-deleteIcon": {
-                  color: "red",
-                },
-              }}
-            />
-          );
-        })}
-        {error && <span className="text-red-600">{error}</span>}
-      </Box>
     </div>
   );
 };

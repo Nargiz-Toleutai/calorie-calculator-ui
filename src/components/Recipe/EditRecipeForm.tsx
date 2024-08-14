@@ -1,38 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { green } from "@mui/material/colors";
 import toast from "react-hot-toast";
-import { TextField, Button, Chip, Box } from "@mui/material";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { Product } from "../../models/product";
-import { Form, FormControl, FormField } from "../../components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../components/ui/popover";
-import { Check, ChevronDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../../components/ui/command";
-import {
-  SelectPr,
-  SelectGroup,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-} from "../../components/ui/select";
-import { cn } from "../../lib/utils";
 import BackLink from "../BackLink/BackLink";
+import CustomTextField from "../CustomTextField/CustomTextField";
+import CustomSelect from "../CustomSelector/CustomSelect";
+import ProductSelector from "./ProductSelector";
+import SelectedProductsChips from "./SelectProductsChips";
+import SubmitButton from "@/button/SubmitButton";
+import FormWrapper from "../FormWrapper/FormWrapper";
 
 export interface Category {
   id: number;
@@ -186,299 +165,56 @@ const EditRecipeForm = ({
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
-        <div>
-          <label htmlFor="name" className="block text-gray-700">
-            Recipe Name
-          </label>
-          <TextField
-            id="name"
-            type="text"
-            {...register("name")}
-            fullWidth
-            variant="outlined"
-            error={!!errors.name}
-            helperText={errors.name?.message}
-            sx={{
-              backgroundColor: "white",
-              borderColor: "white",
-              borderRadius: "6px",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "white",
-                },
-                "&:hover fieldset": {
-                  borderColor: "white",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "green",
-                },
-              },
-            }}
-          />
-        </div>
+    <FormWrapper form={form} onSubmit={handleSubmit(onSubmitForm)}>
+      <CustomTextField
+        id="name"
+        label="Recipe Name"
+        type="text"
+        register={form.register("name")}
+        error={errors.name}
+        helperText={errors.name?.message}
+      />
 
-        <div>
-          <label htmlFor="categoryId" className="block text-gray-700">
-            Category
-          </label>
-          <Controller
-            name="categoryId"
-            control={control}
-            render={({ field }) => (
-              <SelectPr
-                {...field}
-                defaultValue={defaultCategoryId.toString()}
-                onValueChange={(value) => field.onChange(Number(value))}
-                value={field.value.toString()}
-              >
-                <SelectTrigger className="w-full h-14 text-green-800 uppercase">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  {categories.map(({ name, id }) => (
-                    <SelectGroup key={id}>
-                      <SelectItem value={id.toString()}>
-                        <div className="text-gray-700 ml-2">{name}</div>
-                      </SelectItem>
-                    </SelectGroup>
-                  ))}
-                </SelectContent>
-              </SelectPr>
-            )}
-          />
-          {errors.categoryId && (
-            <p className="text-red-500 text-xs mt-1">
-              {errors.categoryId?.message}
-            </p>
-          )}
-        </div>
-        <div>
-          <label htmlFor="products" className="block text-gray-700">
-            Products
-          </label>
-          <FormField
-            control={control}
-            name="products"
-            render={({ field, fieldState: { error } }) => (
-              <>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <button
-                        className={cn(
-                          "flex flex-row items-center justify-between uppercase bg-white border-none text-green-700 w-full h-14 px-3 py-2 hover:bg-white hover:border-none",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        <span>Select Ingredients</span>
-                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[200px] p-0">
-                    <Command>
-                      <CommandList>
-                        <CommandInput
-                          placeholder="Search ingredient..."
-                          value={searchField}
-                          onValueChange={setSearchField}
-                        />
-                        <CommandEmpty>No ingredient found.</CommandEmpty>
-                        <CommandGroup>
-                          {products.map((product) => (
-                            <CommandItem
-                              data-disabled="false"
-                              value={product.name}
-                              key={product.id}
-                              onSelect={() =>
-                                handleAddProduct(product.id ? product.id : 1)
-                              }
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  getValues("products")?.find(
-                                    (pId) => pId.productId === product.id
-                                  )
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              {product.name}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                {error && <p className="text-red-500">{error.message}</p>}
-              </>
-            )}
-          />
-          <Box display="flex" flexWrap="wrap" gap={1} mt={2}>
-            {getValues("products")?.map(({ productId }) => {
-              const product = products.find((p) => p.id === productId);
-              return (
-                <Chip
-                  key={productId}
-                  label={product?.name}
-                  onDelete={() => handleRemoveProduct(productId)}
-                  sx={{
-                    backgroundColor: "white",
-                    borderColor: "green",
-                    borderRadius: "4px",
-                    "& .MuiChip-deleteIcon": {
-                      color: "red",
-                    },
-                  }}
-                />
-              );
-            })}
-          </Box>
-        </div>
+      <CustomSelect
+        control={form.control}
+        name="categoryId"
+        label="Category"
+        options={categories}
+        error={errors.categoryId}
+      />
 
-        <div className="flex justify-between">
-          <Button
-            type="button"
-            variant="contained"
-            color="secondary"
-            onClick={handleDelete}
-            sx={{
-              backgroundColor: "red",
-              "&:hover": {
-                backgroundColor: "darkred",
-              },
-            }}
-          >
-            Delete Recipe
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="secondary"
-            sx={{
-              backgroundColor: green[500],
-              "&:hover": {
-                backgroundColor: green[800],
-              },
-            }}
-          >
-            Update Recipe
-          </Button>
-        </div>
-        <BackLink link={"/meals"} text={" Go back to Recipes"} />
-      </form>
-    </Form>
+      <div>
+        <ProductSelector
+          products={products}
+          selectedProducts={getValues("products") || []}
+          onAddProduct={handleAddProduct}
+          onRemoveProduct={handleRemoveProduct}
+          error={errors.products?.message}
+          searchField={searchField}
+          setSearchField={setSearchField}
+        />
+        <SelectedProductsChips
+          selectedProducts={getValues("products")}
+          products={products}
+          onRemoveProduct={handleRemoveProduct}
+        />
+      </div>
+
+      <div className="flex justify-between">
+        <SubmitButton
+          title={"Delete Recipe"}
+          color={"red"}
+          hoverColor={"darkred"}
+        />
+        <SubmitButton
+          title={"Update Recipe"}
+          color={"green"}
+          hoverColor={"darkgreen"}
+        />
+      </div>
+      <BackLink link={"/meals"} text={" Go back to Recipes"} />
+    </FormWrapper>
   );
 };
 
 export default EditRecipeForm;
-
-// //==================//
-// import { useState, useEffect } from "react";
-// import { useRouter } from "next/router";
-// import RecipeForm from "./RecipeForm";
-// import { Recipe } from "./types";
-// import { Category } from "../../models/category";
-// import { Product } from "../../models/product";
-
-// const EditRecipeForm = ({
-//   recipeId,
-//   initialRecipe,
-// }: {
-//   recipeId: string;
-//   initialRecipe: Recipe;
-// }) => {
-//   const [categories, setCategories] = useState<Category[]>([]);
-//   const [products, setProducts] = useState<Product[]>([]);
-//   const [authError, setAuthError] = useState<string | null>(null);
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     const storedToken = localStorage.getItem("token");
-//     if (!storedToken) {
-//       setAuthError("You are not authorized. Redirecting to login...");
-//       router.push("/login");
-//       return;
-//     }
-
-//     const fetchData = async () => {
-//       try {
-//         const responseCategories = await fetch(
-//           `${process.env.NEXT_PUBLIC_API_URL}/categories`,
-//           {
-//             method: "GET",
-//             headers: {
-//               Authorization: `Bearer ${storedToken}`,
-//             },
-//           }
-//         );
-
-//         const responseProducts = await fetch(
-//           `${process.env.NEXT_PUBLIC_API_URL}/products`,
-//           {
-//             method: "GET",
-//             headers: {
-//               Authorization: `Bearer ${storedToken}`,
-//             },
-//           }
-//         );
-
-//         if (!responseCategories.ok || !responseProducts.ok) {
-//           throw new Error("Network response was not ok");
-//         }
-
-//         setCategories(await responseCategories.json());
-//         setProducts(await responseProducts.json());
-//       } catch (error) {
-//         console.error("Failed to fetch data", error);
-//         setAuthError("Something went wrong. Please try again later.");
-//       }
-//     };
-
-//     fetchData();
-//   }, [router]);
-
-//   const handleUpdateRecipe = async (data: Recipe) => {
-//     const storedToken = localStorage.getItem("token");
-//     try {
-//       const response = await fetch(
-//         `${process.env.NEXT_PUBLIC_API_URL}/recipes/${recipeId}`,
-//         {
-//           method: "PATCH",
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${storedToken}`,
-//           },
-//           body: JSON.stringify(data),
-//         }
-//       );
-
-//       if (!response.ok) {
-//         throw new Error("Failed to submit data");
-//       }
-
-//       router.push("/meals");
-//     } catch (error) {
-//       console.error("Something went wrong", error);
-//     }
-//   };
-
-//   return authError ? (
-//     <p className="text-red-500">{authError}</p>
-//   ) : (
-//     <RecipeForm
-//       recipeId={recipeId}
-//       onSubmit={handleUpdateRecipe}
-//       initialValues={initialRecipe}
-//       categories={categories}
-//       products={products}
-//       buttonText="Update Recipe"
-//     />
-//   );
-// };
-
-// export default EditRecipeForm;

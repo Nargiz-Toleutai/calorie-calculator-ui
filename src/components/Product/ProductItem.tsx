@@ -36,21 +36,16 @@ const ProductItem = React.memo(
               value={protein}
               unit={unit}
               label="Protein"
-              color="green-500"
+              color="stone-500"
             />
             <MacroInfo
               value={carbs}
               unit={unit}
               label="Carbs"
-              color="red-500"
+              color="stone-500"
             />
-            <MacroInfo
-              value={fat}
-              unit={unit!}
-              label="Fat"
-              color="yellow-500"
-            />
-            <p className="text-gray-500 font-bold">{calories} Kcal</p>
+            <MacroInfo value={fat} unit={unit} label="Fat" color="stone-500" />
+            <p className="text-gray-800 font-bold">{calories} Kcal</p>
           </div>
         </div>
       </Link>
