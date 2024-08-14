@@ -1,14 +1,14 @@
 import React from "react";
 import { ImageUploaderProps } from "./types";
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({
+const ImageUploader = ({
   id,
   register,
   error,
   preview,
   onImageChange,
   onRemoveImage,
-}) => {
+}: ImageUploaderProps) => {
   return (
     <div>
       <label htmlFor={id} className="block text-gray-700">
