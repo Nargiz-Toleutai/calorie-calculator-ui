@@ -6,6 +6,7 @@ import FormWrapper from "../FormWrapper/FormWrapper";
 import CustomSelect from "../CustomSelector/CustomSelect";
 import CustomTextField from "../CustomTextField/CustomTextField";
 import ProductSelector from "./ProductSelector";
+import BackLink from "../BackLink/BackLink";
 
 const RecipeForm = ({
   initialValues = { name: "", categoryId: 1, products: [] },
@@ -88,6 +89,7 @@ const RecipeForm = ({
               {buttonText}
             </Button>
           </div>
+          <BackLink link={"/meals"} text={"Go back to recipes"} />
         </FormWrapper>
       </div>
     </div>
