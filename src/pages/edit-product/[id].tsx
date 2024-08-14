@@ -9,6 +9,7 @@ import { Button, TextField } from "@mui/material";
 import RadioButtonsGroup from "./../../components/RadioButtonsGroup";
 import Layout from "@/components/Layout";
 import { green } from "@mui/material/colors";
+import BackLink from "@/components/BackLink/BackLink";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -537,13 +538,7 @@ const EditProduct = () => {
                 Update Product
               </Button>
             </div>
-            <div className="flex justify-between items-center mb-6">
-              <Link href="/products">
-                <span className="inline-block align-baseline font-medium text-sm text-green-600 hover:text-green-800">
-                  Go back to Products
-                </span>
-              </Link>
-            </div>
+            <BackLink link={"/products"} text={"Go back to Products"} />
           </form>
         </div>
       </div>
