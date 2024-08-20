@@ -1,14 +1,33 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, ChangeEvent, useMemo } from "react";
-import { useForm, FieldError, Controller } from "react-hook-form";
+import {
+  useForm,
+  FieldError,
+  Controller,
+  ErrorOption,
+  Field,
+  FieldArray,
+  FieldArrayPath,
+  FieldErrors,
+  FieldName,
+  FieldRefs,
+  FieldValues,
+  FormState,
+  InternalFieldName,
+  RegisterOptions,
+  SubmitErrorHandler,
+  SubmitHandler,
+  UseFormRegisterReturn,
+} from "react-hook-form";
 import { notify } from "../../utils";
 import { useRouter } from "next/router";
 import CustomTextField from "../CustomTextField/CustomTextField";
 import ImageUploader from "./ImageUploader";
 import FormHeader from "./FormHeader";
 import FormFooter from "./FormFooter";
-import RadioButtonsGroup from "../RadioButtonsGroup";
+
 import { Product, ProductValidator } from "./types";
+import UnitContainer from "./UnitContainer";
 
 const AddNewProduct = () => {
   const [product, setProduct] = useState<Product>();
@@ -142,26 +161,12 @@ const AddNewProduct = () => {
             helperText={errors.name?.message}
           />
 
-          <div>
-            <label htmlFor="unit" className="block text-gray-700">
-              Unit
-            </label>
-            <Controller
-              name="unit"
-              control={control}
-              defaultValue={product?.unit ?? "g"}
-              render={({ field }) => (
-                <RadioButtonsGroup
-                  value={field.value}
-                  onChange={(event) => field.onChange(event.target.value)}
-                  options={unitOptions}
-                />
-              )}
-            />
-            {errors.unit && (
-              <p className="text-red-500">{errors.unit.message as string}</p>
-            )}
-          </div>
+          <UnitContainer
+            control={control}
+            unitOptions={unitOptions}
+            errors={errors}
+            product={product}
+          />
 
           <CustomTextField
             id="quantity"

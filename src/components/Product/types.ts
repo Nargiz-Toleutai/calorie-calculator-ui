@@ -66,7 +66,6 @@ export const ProductValidator = z
     portion: z.preprocess(() => 0, z.number().min(0).default(0)),
     file: z
       .any()
-      .optional()
       .refine((files) => {
         return !files?.length || files?.[0]?.size <= MAX_FILE_SIZE;
       }, `Max image size is 5MB.`)
