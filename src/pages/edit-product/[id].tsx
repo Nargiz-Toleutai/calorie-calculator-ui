@@ -7,11 +7,11 @@ import CustomTextField from "@/components/CustomTextField/CustomTextField";
 import ImageUploader from "@/components/Product/ImageUploader";
 import FormHeader from "@/components/Product/FormHeader";
 import FormFooter from "@/components/Product/FormFooter";
-import RadioButtonsGroup from "@/components/RadioButtonsGroup";
 import { Product, ProductValidator } from "@/components/Product/types";
 import DynamicButton from "@/button/DynamicButton";
 import Layout from "@/components/Layout";
 import UnitContainer from "@/components/Product/UnitContainer";
+import Link from "next/link";
 
 const EditProduct = () => {
   const [product, setProduct] = useState<Product>();
@@ -31,12 +31,17 @@ const EditProduct = () => {
     control,
     formState: { errors },
   } = useForm<Product>({
-    resolver: zodResolver(ProductValidator),
+    resolver: (...args) => {
+      console.log({ args });
+      return zodResolver(ProductValidator)(...args);
+    },
     defaultValues: {
       portion: 0,
       quantity: 100,
     },
   });
+
+  console.log({ errors });
 
   useEffect(() => {
     if (authError) {
@@ -74,7 +79,11 @@ const EditProduct = () => {
         const data = await response.json();
         setProduct(data);
 
-        reset({ ...data, image: undefined });
+        const resetData = { ...data };
+        delete resetData.image;
+        delete resetData.id;
+
+        reset(resetData);
         setPreview(`${process.env.NEXT_PUBLIC_API_URL}${data.image}`);
       } catch (error) {
         console.error("Failed to fetch product data", error);
@@ -119,6 +128,7 @@ const EditProduct = () => {
 
   const onSubmitForm = async (data: Product) => {
     const formData = new FormData();
+    console.log("Form data:", formData);
     formData.append("name", data.name);
     formData.append("unit", data.unit);
     formData.append("quantity", data.quantity.toString());
@@ -128,7 +138,7 @@ const EditProduct = () => {
     formData.append("calories", data.calories.toString());
     formData.append("portion", data.portion.toString());
     if (file !== undefined) formData.append("image", file);
-
+    console.log("1");
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
@@ -140,7 +150,7 @@ const EditProduct = () => {
           body: formData,
         }
       );
-
+      console.log({ response });
       if (!response.ok) {
         throw new Error("Failed to update product");
       }
@@ -286,7 +296,13 @@ const EditProduct = () => {
                 hoverColor={"darkgreen"}
               />
             </div>
-            <FormFooter />
+            <div className="flex justify-between items-center mb-6">
+              <Link href="/products">
+                <span className="inline-block align-baseline font-medium text-sm text-green-600 hover:text-green-800">
+                  Go back to Products
+                </span>
+              </Link>
+            </div>
           </form>
         </div>
       </div>
